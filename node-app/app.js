@@ -103,7 +103,7 @@ app.post('/upload', function (req, res) {
             singleFile.uploadDate = new Date();
 
             var myJSONObject = JSON.stringify(singleFile);
-            console.log("se povikuva so json:  " + myJSONObject);
+           // console.log("se povikuva so json:  " + myJSONObject);
 
             // Set the headers
             var headers = {
@@ -122,7 +122,7 @@ app.post('/upload', function (req, res) {
             request(options, function (error, response, body) {
                 if (!error && response.statusCode == 200) {
                     // Print out the response body
-                    console.log(body);
+                 //   console.log(body);
                     res.json({error_code: 0, err_desc: null});
                 } else {
                     console.log(error);
@@ -139,7 +139,7 @@ app.post('/files', function (req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");
     var singleFile = new fileModel();
 
-    console.log(req.body);
+ //   console.log(req.body);
     //  console.log(req.body.data);
     var jsonData = req.body;
     // ako ne e veke object zavisi sto isprakame var jsonData =
