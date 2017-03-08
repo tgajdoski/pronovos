@@ -1,5 +1,5 @@
 var express = require('express');
- var request = require('request');
+var request = require('request');
 // var http = require("http");
 var app = express();
 var bodyParser = require('body-parser');
@@ -105,7 +105,7 @@ app.post('/upload', function (req, res) {
             var myJSONObject = JSON.stringify(singleFile);
             console.log("se povikuva so json:  " + myJSONObject);
 
-                // Set the headers
+            // Set the headers
             var headers = {
                 'Content-Type': 'application/json'
             };
@@ -115,7 +115,7 @@ app.post('/upload', function (req, res) {
                 uri: 'http://localhost:3001/files',
                 method: 'POST',
                 headers: headers,
-                form: myJSONObject
+                body: myJSONObject
             };
 
             // Start the request
@@ -123,12 +123,10 @@ app.post('/upload', function (req, res) {
                 if (!error && response.statusCode == 200) {
                     // Print out the response body
                     console.log(body);
-                     res.json({error_code: 0, err_desc: null});
-                }
-                else
-                {
+                    res.json({error_code: 0, err_desc: null});
+                } else {
                     console.log(error);
-                     res.json({error_code: 1, err_desc: error});
+                    res.json({error_code: 1, err_desc: error});
                 }
             });
 
@@ -157,7 +155,7 @@ app.post('/files', function (req, res, next) {
     singleFile.size = jsonData.size;
     singleFile.uploadDate = new Date();
 
-    console.log("POVIKAN SUM " + singleFile);
+    //   console.log("POVIKAN SUM " + singleFile);
 
     singleFile.save(function (err, result) {
         res.json(result);
