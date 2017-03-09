@@ -88,7 +88,7 @@
 </div>
 <br>
 <br>
-<h1>{{fileCount}}</h1>
+<h3 style="padding-left: 50px">{{fileCount}} files uploaded</h3>
 <br>
 <br>
 <div class="container">
@@ -112,8 +112,8 @@
                         <td>{{file.size}}</td>
                         <td>{{file.uploadDate | date}}</td>
                         <td>
-                        <button type="button" class="btn btn-success" (click)="editUser($event, employee)" data-toggle="modal" data-target="#myModal">SPLIT-OCR</button>
-                        <button type="button" class="btn btn-danger" (click)="deleteUser($event, employee)">Delete</button>
+                        <button type="button" class="btn btn-success" (click)="workOcr($event, file)" data-toggle="modal" data-target="#myModal">SPLIT-OCR</button>
+                        <button type="button" class="btn btn-danger" (click)="deleteFile($event, file)">Delete</button>
                         </td>
                     </tr>
                     </tbody>

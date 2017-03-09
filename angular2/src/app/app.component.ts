@@ -46,6 +46,27 @@ export class AppComponent {
   }
 
 
+ workOcr(e: any, element: any) {
+    this._id = element._id;
+    this.originalname = element.originalname;
+    this.mimetype = element.mimetype;
+    this.size = element.size;
+    this.uploadDate = element.uploadDate;
+    console.log(element);
+  }
+
+  deleteFile(e: any, element: any) {
+    this._filelistService.deleteFile(element._id)
+      .subscribe(
+      res => {
+        console.log("File details deleted!");
+        this.loadFileList();
+      },
+      err => {
+        console.log("Error deleting file!");
+      });
+  }
+
 }
 
 

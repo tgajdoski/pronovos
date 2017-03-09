@@ -17,4 +17,12 @@ export class FileListService {
         return this._http.get(this.localUrl + '/files/')
             .map(res => res.json());
     }
+
+
+     deleteFile(fileid: any) {
+        console.log("adsdasdasd :  " + fileid);
+        return this._http.delete(this.localUrl + '/files/' + fileid)
+            .map(res => res.json());
+    }
+
 }
