@@ -10,7 +10,7 @@ export class FileListService {
 
     constructor(private _http: Http) {
         this.localUrl = "http://localhost:3001";
-        console.log("Files Provider");
+      //  console.log("Files Provider");
     }
 
     getFileList() {

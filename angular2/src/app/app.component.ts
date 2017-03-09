@@ -12,7 +12,6 @@ import { FileListService } from './services/file-list.service'
 export class AppComponent {
   public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload'});
 
-
   public fileList: any;
   public _id: any;
   public originalname: any;
@@ -34,15 +33,16 @@ export class AppComponent {
   loadFileList() {
     this._filelistService.getFileList()
       .subscribe((res: any) => {
-        //console.log("Response", res)
-        this.fileList = res.data;
-        this.fileCount = res.totalCount;
-//        console.log(this.fileCount);
+      //  console.log("Response", res)
+        this.fileList = res;
+        this.fileCount = res.length;
+    //    console.log(this.fileCount);
       });
   }
 
   ngOnInit() {
-    this.loadFileList();
+//    this.loadFileList();
+      this.paginateEmployee();
   }
 
 
