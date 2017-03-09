@@ -139,7 +139,7 @@ app.post('/files', function (req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");
     var singleFile = new fileModel();
 
- //   console.log(req.body);
+    console.log(req.body);
     //  console.log(req.body.data);
     var jsonData = req.body;
     // ako ne e veke object zavisi sto isprakame var jsonData =
@@ -158,6 +158,9 @@ app.post('/files', function (req, res, next) {
     //   console.log("POVIKAN SUM " + singleFile);
 
     singleFile.save(function (err, result) {
+        if (err)
+            console.log(err);
+        console.log(result);
         res.json(result);
     });
 });

@@ -3,6 +3,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { FileListService } from './services/file-list.service'
 
 @Component({
+  moduleId: module.id,
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
