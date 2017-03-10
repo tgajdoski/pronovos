@@ -23,17 +23,20 @@ var rimraf = require('rimraf');
  *
  * @return callback(<maybe error>, output_paths)
  */
-module.exports = function(pdf_path, callback) {
+module.exports = function(pdf_path, output_dir, callback) {
+  console.log("viknat sum so " +  pdf_path + " output " + output_dir);
   confirm_file_exists(pdf_path, function (err) {
     if (err) { return callback(err); }
 
     var output_dir = temp.path({},'pdf_pages');
+    
     fs.mkdir(output_dir, function(err) {
       if (err) { return callback(err, null); }
       // name the files with the upload id and a digit string
       // example: "507c3e55c786e2aa6f000005-page00001.pdf"
       var output_name = 'page%05d.pdf"';
       var output_path = path.join(output_dir, output_name);
+      console.log(output_path)
       var cmd = 'pdftk "'+pdf_path+'" burst output "'+ output_path;
       var child = exec(cmd, function (err, stdout, stderr) {
         if (err) {
@@ -41,6 +44,7 @@ module.exports = function(pdf_path, callback) {
             message: 'an error occurred while splitting pdf into single pages with the pdftk burst command',
             error: err
           }
+          console.log(err);
           callback(output_err, null);
           return;
         }

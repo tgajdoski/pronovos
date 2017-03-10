@@ -13,8 +13,9 @@ import { FileListService } from './services/file-list.service'
 export class AppComponent {
   public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload'});
 
-  public fileList: any;
+  public fileList: string;
   public _id: any;
+  public fileName: any;
   public originalname: any;
   public mimetype: any;
   public size: number;
@@ -49,11 +50,16 @@ export class AppComponent {
 
  workOcr(e: any, element: any) {
     this._id = element._id;
+    this.fileName = element.filename;
     this.originalname = element.originalname;
     this.mimetype = element.mimetype;
     this.size = element.size;
     this.uploadDate = element.uploadDate;
-    console.log(element);
+  //  console.log(element);
+  //  console.log("imeto na pdf-ot: " + this.originalname);
+    this._filelistService.splitFile();
+  //  this._filelistService.splitFile(this.fileName);
+
   }
 
   deleteFile(e: any, element: any) {

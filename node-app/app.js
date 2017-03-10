@@ -5,8 +5,23 @@ var app = express();
 var bodyParser = require('body-parser');
 var multer = require('multer');
 
+var inspect = require('eyespect').inspector({maxLength:20000});
+var path = require('path');
+var assert = require('assert');
+var fs = require('fs');
+var async = require('async');
+
+var convert = require('./lib/convert.js');
+var split = require('./lib/split.js');
+
+
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+
+
+
+
+
 
 mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
     if (err) 
@@ -270,6 +285,22 @@ app.delete('/files/:fileId', function (req, res, next) {
             res.json(result);
         });
     }
+
+});
+
+
+app.get('/split/:filename', function (req, res, next) {
+    var file_name =  req.params.filename;
+    var relative_path = path.join('uploads',file_name);
+//    console.log(relative_path);
+    var pdf_path = path.join(__dirname, relative_path);
+  //  console.log ("pdf_path : " + pdf_path);
+    
+    split(pdf_path, './', function (err, output) {
+         console.log(err);
+         console.log(output);
+         res.json(output);
+    });
 
 });
 
