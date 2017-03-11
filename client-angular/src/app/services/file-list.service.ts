@@ -19,28 +19,30 @@ export class FileListService {
     };
 
 
-    splitFile() {
-        // console.log("vikam split :  " + fileName);
-     //   console.log("treva da okine: " + this.localUrl + '/split/' + fileName);
-        //  return this._http.get(this.localUrl + '/split/' + fileName)
-        return this
-            ._http
-            .get(this.localUrl + '/split/file-1489151331806.pdf')
-            .map(res => res.json());
+    splitFile(fileName: any) {
+          return this._http.get(this.localUrl + '/split/' + fileName)
+             .map((res: Response) => res.json())
+            .subscribe(res => {
+                console.log(res);
+            });
+
     };
 
 
     getFileList() {
-
-
         return this
             ._http
             .get(this.localUrl + '/files/')
             .map(res => res.json());
+    };
 
-        // vaka rabotit     return this._http.get(this.localUrl +
-        // '/split/file-1489151331806.pdf')    .map(res => res.json());
+    
 
+    getPdfFileList(folderName: any) {
+        return this
+            ._http
+            .get(this.localUrl + '/folderlist/' + folderName) 
+            .map(res => res.json());
     };
 
     deleteFile(fileid : any) {

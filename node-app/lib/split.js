@@ -23,12 +23,13 @@ var rimraf = require('rimraf');
  *
  * @return callback(<maybe error>, output_paths)
  */
-module.exports = function(pdf_path, output_dir, callback) {
-  console.log("viknat sum so " +  pdf_path + " output " + output_dir);
+module.exports = function(pdf_path, filenamefordir, callback) {
+
   confirm_file_exists(pdf_path, function (err) {
     if (err) { return callback(err); }
 
-    var output_dir = temp.path({},'pdf_pages');
+    var otp_path = '/../uploads/split/'; // linundefined
+    var output_dir = path.join(__dirname +  otp_path + filenamefordir ); //temp.path({},'pdf_pages');
     
     fs.mkdir(output_dir, function(err) {
       if (err) { return callback(err, null); }
@@ -36,7 +37,9 @@ module.exports = function(pdf_path, output_dir, callback) {
       // example: "507c3e55c786e2aa6f000005-page00001.pdf"
       var output_name = 'page%05d.pdf"';
       var output_path = path.join(output_dir, output_name);
-      console.log(output_path)
+      console.log(output_dir);
+       console.log(output_path);
+    
       var cmd = 'pdftk "'+pdf_path+'" burst output "'+ output_path;
       var child = exec(cmd, function (err, stdout, stderr) {
         if (err) {

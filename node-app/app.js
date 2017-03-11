@@ -278,7 +278,7 @@ app.delete('/files/:fileId', function (req, res, next) {
     if ('OPTIONS' == req.method) {
         res.send(200);
     } else {
-        fileId = req.params.employeeId;
+        fileId = req.params.fileId;
         fileModel.remove({
             '_id': fileId
         }, function (err, result) {
@@ -296,12 +296,25 @@ app.get('/split/:filename', function (req, res, next) {
     var pdf_path = path.join(__dirname, relative_path);
   //  console.log ("pdf_path : " + pdf_path);
     
-    split(pdf_path, './', function (err, output) {
-         console.log(err);
+    split(pdf_path, file_name.replace(/\.[^/.]+$/, ""), function (err, output) {
+       //  console.log(err);
          console.log(output);
          res.json(output);
     });
+});
 
+
+app.get('/folderlist/:foldername', function (req, res, next) {
+    var foldername =  req.params.foldername;
+    var fpath = './uploads/split/' + foldername;
+    fs.readdir(fpath, function(error, files) {
+          if (error) {
+            throw error;
+          }
+          else {
+            res.json(files);
+          }
+        });
 });
 
 app.listen('3001', function () {
