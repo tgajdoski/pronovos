@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default">
+<!--<nav class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -8,8 +8,9 @@
             </div>
         </div>
     </div>
-</nav>
+</nav>-->
 <div class="container">
+     <h2></h2>
     <div class="row">
         <div class="col-md-4">
             <form>
@@ -24,7 +25,7 @@
             </form>
         </div>
         <div class="col-md-8">
-            <h3>File Upload with Angular 2 and Node</h3>
+            <h3>Please update your pdfs</h3>
             Queue length: {{ uploader?.queue?.length }}
 
             <table class="table">
@@ -60,7 +61,7 @@
                                         </button>
                             <button type="button" class="btn btn-danger btn-xs" (click)="item.remove()">
                                             <span class="glyphicon glyphicon-trash"></span> Remove
-                                        </button>
+                                        </button>                                    
                         </td>
                     </tr>
                 </tbody>
@@ -82,6 +83,7 @@
                 <button type="button" class="btn btn-danger btn-s" (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
                                     <span class="glyphicon glyphicon-trash"></span> Remove all
                                 </button>
+                                
             </div>
         </div>
     </div>
@@ -114,6 +116,8 @@
                         <td>
                         <button type="button" class="btn btn-success" (click)="workOcr($event, file)" data-toggle="modal" data-target="#myModal">SPLIT-OCR</button>
                         <button type="button" class="btn btn-danger" (click)="deleteFile($event, file)">Delete</button>
+                        <!--<button type="button" class="btn btn-danger" (click)="openthumb($event, file)">open thumb</button>-->
+                        <a [routerLink]="['/thumb', file.filename]">view thumbs</a>
                         </td>
                     </tr>
                     </tbody>
