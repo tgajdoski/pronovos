@@ -1,37 +1,21 @@
 <div class="container">
-    <div>
-        <label>PDF src</label>
-        <input type="text" placeholder="PDF src" [(ngModel)]="pdfSrc">
-    </div>
-    <div>
-        <label>Page:</label>
-        <input type="number" placeholder="Page" [(ngModel)]="page">
-    </div>
+    
     <div class="row">
-        <div class="col-md-5">
-            <div class="thumbnail" style="width: 150px;height: 200px;" (click)="pdfShow=!pdfShow">
-                <p>click me to view PDF in Iframe!</p>
-
-                <pdf-viewer [src]= "pdfSrc"
+        <div class="col-md-3">
+           <div   *ngFor="let item of fileList" class="thumbnail" style="width: 250px;height: 200px;" (click)="setParams(item)">
+                <pdf-viewer [src]= "item"
                             [page]= 1
                             [original-size]="false"
                             style="display: block;"
                  ></pdf-viewer>
             </div>
-            <div *ngFor="let item of fileList" >
-                <p>{{item}}</p>
-                <p>{{pdfSrc}}</p>
-            </div>
+            
             <br>
         </div>
-        <div class="col-md-7">
+        <div class="col-md-8">
             <div *ngIf="pdfShow">
-                <h4>PDF in Iframe</h4>
-                <iframe width="500" height="600" [src]="pageurl" type="application/pdf"></iframe>
+                <iframe width="900" height="700" [src]="pageurl" type="application/pdf"></iframe>
             </div>
         </div>
     </div>
-    <br><br>
-    <h2> PDF in Object Tag</h2>
-    <object width="500" height="600"  data="https://vadimdez.github.io/ng2-pdf-viewer/pdf-test.pdf" type="application/pdf"></object>
 </div>

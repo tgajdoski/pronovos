@@ -19,10 +19,9 @@ export class ThumbComponentComponent implements OnInit {
   pageurl:SafeResourceUrl;
   
   public fileList: string[];
-
-  private sub: any;      // -> Subscriber
-  private foldername: string;  // -> var I want to init with my route parameter
-
+  public pdfShow :boolean;
+  private sub: any;      
+  private foldername: string;  
 
   constructor(private domSanitizer:DomSanitizer, public route: ActivatedRoute, private _filelistService: FileListService ){
 
@@ -39,15 +38,14 @@ export class ThumbComponentComponent implements OnInit {
         });
 
         this.loadPdfFileList(this.foldername);
-         // se vika node api so parametar foldername 
-         // da  dade json so url na pdf-kite 
-       
-         // da se vrti po site pateki od jsonot 
-         // moze da se napravi lista na objekti i vo ng for na view-to
-         // i da se napravi thumbnails za sekoj od niv
-
   }
     
+     setParams(item :any){
+       console.log(item);
+       this.pdfShow = true;
+      this.pdfSrc=item;
+      this.pageurl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.pdfSrc);
+    }
 
     loadPdfFileList(foldername: any) {
       this._filelistService.getPdfFileList(foldername)
@@ -55,7 +53,7 @@ export class ThumbComponentComponent implements OnInit {
         this.fileList =[];
         var tempList = res;
         tempList.forEach(element => {
-           console.log(element['pdfPath']);
+        //   console.log(element['pdfPath']);
        //    console.log(element['pdfName']);
             if(element['pdfPath'].endsWith('.pdf'))
               this.fileList.push(element['pdfPath']);
@@ -63,7 +61,7 @@ export class ThumbComponentComponent implements OnInit {
         });
     
     //   var firstpdf =   jsonObj[1]['pdfPath'];
-       console.log(this.fileList);
+     //  console.log(this.fileList);
      //  console.log(firstpdf.dir);
       });
   }

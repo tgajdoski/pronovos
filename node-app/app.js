@@ -320,15 +320,11 @@ app.get('/folderlist/:foldername', function (req, res, next) {
           else {
             var files = [];
             filelist.forEach(file => {
-                console.log(file);
-             //   var pathpfd = path.parse(fpath + "/"  + file);
-               
+           
                var hosturl = "http://localhost:3001";
-                console.log(" hosturl" + hosturl);
-                 console.log(" fpath" + fpath);
-                  console.log("file " + file);
-                 var pathpfd = url.resolve(hosturl, fpath , file);
-                 console.log(pathpfd);
+              
+                 var pathpfd = url.resolve(hosturl, fpath) + "/" + file;
+               
                  var pdfname =  file;
                 files.push({pdfPath: pathpfd, pdfName: pdfname});
             });
