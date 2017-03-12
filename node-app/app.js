@@ -18,7 +18,7 @@ var split = require('./lib/split.js');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-
+var url = require('url');
 
 
 
@@ -42,6 +42,9 @@ app.use(function (req, res, next) { //allow cross origin requests
 /** Serving from the same express Server
     No cors required */
 app.use(express.static('../client'));
+//app.use(express.static('./uploads/split'));
+app.use("/uploads",express.static('./uploads'));
+
 app.use(bodyParser.json());
 
 var storage = multer.diskStorage({ //multers disk storage settings
@@ -304,15 +307,33 @@ app.get('/split/:filename', function (req, res, next) {
 });
 
 
+
+   
+
 app.get('/folderlist/:foldername', function (req, res, next) {
     var foldername =  req.params.foldername;
     var fpath = './uploads/split/' + foldername;
-    fs.readdir(fpath, function(error, files) {
+    fs.readdir(fpath, function(error, filelist) {
           if (error) {
             throw error;
           }
           else {
-            res.json(files);
+            var files = [];
+            filelist.forEach(file => {
+                console.log(file);
+             //   var pathpfd = path.parse(fpath + "/"  + file);
+               
+               var hosturl = "http://localhost:3001";
+                console.log(" hosturl" + hosturl);
+                 console.log(" fpath" + fpath);
+                  console.log("file " + file);
+                 var pathpfd = url.resolve(hosturl, fpath , file);
+                 console.log(pathpfd);
+                 var pdfname =  file;
+                files.push({pdfPath: pathpfd, pdfName: pdfname});
+            });
+            res.contentType('application/json');
+            res.send(JSON.stringify(files));
           }
         });
 });
