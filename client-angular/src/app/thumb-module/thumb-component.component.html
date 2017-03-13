@@ -2,18 +2,21 @@
     
     <div class="row">
         <div class="col-md-3">
-           <div   *ngFor="let item of fileList" class="thumbnail" style="width: 250px;height: 200px;" (click)="setParams(item)">
-                <pdf-viewer [src]= "item"
+           <div   *ngFor="let item of filepngList; let i = index" class="thumbnail" (click)="setParams(item, i)">
+                <!--<pdf-viewer [src]= "item"
                             [page]= 1
                             [original-size]="false"
                             style="display: block;"
-                 ></pdf-viewer>
+                 ></pdf-viewer>-->
+                 <p>{{i+1}}  -  {{filedataList[i]}}</p>
+                    <img src="{{item}}" style="width: 250px;"> 
             </div>
-            
             <br>
+            
         </div>
         <div class="col-md-8">
             <div *ngIf="pdfShow">
+                 <h3>{{filebookmarkname}}</h3>
                 <iframe width="900" height="700" [src]="pageurl" type="application/pdf"></iframe>
             </div>
         </div>

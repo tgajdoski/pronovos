@@ -74,7 +74,7 @@ convertThumsPdf: function(input_path, filenamefordir, callback ) {
   
 
 
-    var output_name = 'file%05d.png"';
+    var output_name = 'page%05d.png"';
      var output_path = path.join(output_dir, output_name);
 
       console.log("o : "  + output_path);

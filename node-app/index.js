@@ -28,10 +28,27 @@ var split = require('./lib/split.js');
 
 // DA SE KONVERTIRA OD PDF VO TIF
  // convert('./test/test_data/multipage_searchable.pdf', function (err, tif_path) {
- convertMod.convertThumsPdf('./test/test_data/single_page_raw.pdf', function (err, tif_path) {
-        console.log(err);
-         console.log(tif_path);
- });
+//  convertMod.convertThumsPdf('./test/test_data/single_page_raw.pdf', function (err, tif_path) {
+//         console.log(err);
+//          console.log(tif_path);
+//  });
 
+
+fs.readFile('./uploads/split/file-1489413601113/doc_data.txt', function(err, data) {
+    if(err) throw err;
+    var array = data.toString().split("\n");
+    var num = 0; 
+    var arrayFinal =  [];
+    for(var i in array) {
+        if (array[i].startsWith('BookmarkTitle:') )
+        {
+            num++;
+          arrayFinal.push(array[i].replace('BookmarkTitle:', ''));
+        }
+    }
+    for(var i in arrayFinal) {
+       console.log(arrayFinal[i]);
+    }
+});
 
  

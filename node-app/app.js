@@ -332,19 +332,47 @@ app.get('/createthumb/:filename', function (req, res, next) {
 
 
 
+
+app.get('/folderlistdata/:foldername', function (req, res, next) {
+    var foldername =  req.params.foldername;
+    var fpath = './uploads/split/' + foldername;
+
+
+
+        fs.readFile( fpath + '/doc_data.txt', function(err, data) {
+            if(err) throw err;
+            var array = data.toString().split("\n");
+            var num = 0; 
+            var arrayFinal =  [];
+            for(var i in array) {
+                if (array[i].startsWith('BookmarkTitle:') )
+                {
+                    num++;
+                arrayFinal.push(array[i].replace('BookmarkTitle:', ''));
+                }
+            }
+             res.contentType('application/json');
+            res.send(JSON.stringify(arrayFinal));
+        });
+
+});
    
 
 app.get('/folderlist/:foldername', function (req, res, next) {
     var foldername =  req.params.foldername;
     var fpath = './uploads/split/' + foldername;
+
+   
+
     fs.readdir(fpath, function(error, filelist) {
           if (error) {
             throw error;
           }
           else {
             var files = [];
+            
             filelist.forEach(file => {
-           
+                
                var hosturl = "http://localhost:3001";
               
                  var pathpfd = url.resolve(hosturl, fpath) + "/" + file;

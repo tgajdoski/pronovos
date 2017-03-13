@@ -17,8 +17,11 @@ export class ThumbComponentComponent implements OnInit {
   page:number = 1;
   pageurl:SafeResourceUrl;
   
-  public fileList: string[];
+  public filepdfList: string[];
+  public filepngList: string[];
+  public filedataList: string[];
   public pdfShow :boolean;
+  public filebookmarkname :string;
   private sub: any;      
   private foldername: string;  
 
@@ -35,34 +38,49 @@ export class ThumbComponentComponent implements OnInit {
             .subscribe(params => {
                 this.foldername = params['foldername'].replace(/\.[^/.]+$/, ""); 
         });
-
-        this.loadPdfFileList(this.foldername);
+     
+        this.loadDataDocFileList(this.foldername);
+          this.loadPdfFileList(this.foldername);
   }
     
-     setParams(item :any){
+     setParams(item :any, datafileindex: any){
        console.log(item);
+       console.log(datafileindex);
        this.pdfShow = true;
-      this.pdfSrc=item;
-      this.pageurl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.pdfSrc);
+       var str = item;
+        var rest = str.replace(".png", ".pdf"); 
+        this.filebookmarkname = this.filedataList[datafileindex];
+        console.log(rest);
+        this.pdfSrc=rest;
+        this.pageurl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.pdfSrc);
     }
 
     loadPdfFileList(foldername: any) {
       this._filelistService.getPdfFileList(foldername)
       .subscribe((res: any) => {
-        this.fileList =[];
+        this.filepdfList =[];
+         this.filepngList =[];
         var tempList = res;
         tempList.forEach(element => {
-        //   console.log(element['pdfPath']);
-       //    console.log(element['pdfName']);
+          //  console.log(element);
+          //  console.log(element['pdfPath']);
+          //  console.log(element['pdfName']);
             if(element['pdfPath'].endsWith('.pdf'))
-              this.fileList.push(element['pdfPath']);
-            
+              this.filepdfList.push(element['pdfPath']);
+            if(element['pdfPath'].endsWith('.png'))
+              this.filepngList.push(element['pdfPath']);  
         });
-    
-    //   var firstpdf =   jsonObj[1]['pdfPath'];
-     //  console.log(this.fileList);
-     //  console.log(firstpdf.dir);
+ //console.log( this.filepngList);
+ //console.log( this.filepdfList);
       });
+      
   }
 
+   loadDataDocFileList(foldername: any) {
+            this._filelistService.getDataFileList(foldername)
+            .subscribe((res: any) => {
+              this.filedataList = res;              
+              console.log(this.filedataList);
+            });
+   }
 }

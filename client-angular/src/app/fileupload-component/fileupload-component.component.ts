@@ -64,6 +64,7 @@ export class FileuploadComponentComponent implements OnInit {
  
     var splitfiles = this._filelistService.splitFile(this.fileName);
    var thumbnails = this._filelistService.createThumbs(this.fileName);
+   console.log("THUMBS" + thumbnails);
 
   }
 

@@ -55,6 +55,14 @@ export class FileListService {
             .map(res => res.json());
     };
 
+    getDataFileList(folderName: any) {
+        return this
+            ._http
+            .get(this.localUrl + '/folderlistdata/' + folderName) 
+            .map(res => res.json());
+    };
+    
+
     deleteFile(fileid : any) {
         console.log("adsdasdasd :  " + fileid);
         return this
