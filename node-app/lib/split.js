@@ -37,8 +37,11 @@ module.exports = function(pdf_path, filenamefordir, callback) {
       // example: "507c3e55c786e2aa6f000005-page00001.pdf"
       var output_name = 'page%05d.pdf"';
       var output_path = path.join(output_dir, output_name);
-      console.log(output_dir);
-       console.log(output_path);
+
+
+      console.log(pdf_path);
+      console.log(output_name);
+      console.log(output_path);
     
       var cmd = 'pdftk "'+pdf_path+'" burst output "'+ output_path;
       var child = exec(cmd, function (err, stdout, stderr) {

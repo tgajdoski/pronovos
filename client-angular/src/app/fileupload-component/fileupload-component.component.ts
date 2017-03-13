@@ -61,10 +61,9 @@ export class FileuploadComponentComponent implements OnInit {
     this.mimetype = element.mimetype;
     this.size = element.size;
     this.uploadDate = element.uploadDate;
-  //  console.log(element);
-    console.log("imeto na pdf-ot: " + this.originalname);
-   // this._filelistService.splitFile();
-    this._filelistService.splitFile(this.fileName);
+ 
+    var splitfiles = this._filelistService.splitFile(this.fileName);
+   var thumbnails = this._filelistService.createThumbs(this.fileName);
 
   }
 

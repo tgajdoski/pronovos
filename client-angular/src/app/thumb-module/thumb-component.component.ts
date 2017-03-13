@@ -13,7 +13,6 @@ export class ThumbComponentComponent implements OnInit {
 
 // vrti po sekoj pdf of dir i pravi 
 
-//  pdfSrc = 'https://vadimdez.github.io/ng2-pdf-viewer/pdf-test.pdf';
   pdfSrc = 'http://localhost:3001/uploads/split/file-1489246452855/page00001.pdf';
   page:number = 1;
   pageurl:SafeResourceUrl;

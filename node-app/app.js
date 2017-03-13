@@ -11,7 +11,7 @@ var assert = require('assert');
 var fs = require('fs');
 var async = require('async');
 
-var convert = require('./lib/convert.js');
+var convertMod = require('./lib/convert.js');
 var split = require('./lib/split.js');
 
 
@@ -178,7 +178,7 @@ app.post('/files', function (req, res, next) {
     singleFile.save(function (err, result) {
         if (err)
             console.log(err);
-        console.log(result);
+      //  console.log(result);
         res.json(result);
     });
 });
@@ -295,13 +295,37 @@ app.delete('/files/:fileId', function (req, res, next) {
 app.get('/split/:filename', function (req, res, next) {
     var file_name =  req.params.filename;
     var relative_path = path.join('uploads',file_name);
+    console.log(file_name);
+    console.log(relative_path);
+    var pdf_path = path.join(__dirname, relative_path);
+
+    
+    split(pdf_path, file_name.replace(/\.[^/.]+$/, ""), function (err, output) {
+       //  console.log(err);
+    //     console.log(output);
+         res.json(output);
+    });
+
+
+
+
+});
+
+
+app.get('/createthumb/:filename', function (req, res, next) {
+    var file_name =  req.params.filename;
+    var relative_path = path.join('uploads',file_name);
 //    console.log(relative_path);
     var pdf_path = path.join(__dirname, relative_path);
   //  console.log ("pdf_path : " + pdf_path);
     
-    split(pdf_path, file_name.replace(/\.[^/.]+$/, ""), function (err, output) {
-       //  console.log(err);
-         console.log(output);
+  console.log ("pdf_path : " + pdf_path);
+    console.log ("file_name : " + file_name.replace(/\.[^/.]+$/, ""));
+  
+
+    convertMod.convertThumsPdf(pdf_path, file_name.replace(/\.[^/.]+$/, ""), function (err, output) {
+     //    console.log(err);
+     //    console.log(output);
          res.json(output);
     });
 });

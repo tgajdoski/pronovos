@@ -29,6 +29,16 @@ export class FileListService {
     };
 
 
+
+    createThumbs(fileName: any) {
+          return this._http.get(this.localUrl + '/createthumb/' + fileName)
+             .map((res: Response) => res.json())
+            .subscribe(res => {
+                console.log(res);
+            });
+
+    };
+
     getFileList() {
         return this
             ._http
