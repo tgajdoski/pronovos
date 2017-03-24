@@ -4,7 +4,7 @@ var request = require('request');
 var app = express();
 var bodyParser = require('body-parser');
 var multer = require('multer');
-
+var multerS3 = require('multer-s3')
 var inspect = require('eyespect').inspector({maxLength:20000});
 var path = require('path');
 var assert = require('assert');
@@ -20,8 +20,9 @@ mongoose.Promise = global.Promise;
 
 var url = require('url');
 
-
-
+var AWS = require("aws-sdk");
+AWS.config.update({accessKeyId: 'AKIAIG5DVR42CZZVGTVQ', secretAccessKey: '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'});
+var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
 mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
     if (err) 
@@ -33,7 +34,7 @@ mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
 
 app.use(function (req, res, next) { //allow cross origin requests
     res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Credentials", true);
     next();
@@ -46,6 +47,9 @@ app.use(express.static('../client'));
 app.use("/uploads",express.static('./uploads'));
 
 app.use(bodyParser.json());
+
+
+
 
 var storage = multer.diskStorage({ //multers disk storage settings
     destination: function (req, file, cb) {
@@ -61,6 +65,8 @@ var storage = multer.diskStorage({ //multers disk storage settings
         ]);
     }
 });
+
+
 
 var Schema = mongoose.Schema;
 var fileSchema = new Schema({
@@ -96,8 +102,30 @@ var fileSchema = new Schema({
 
 var fileModel = mongoose.model('files', fileSchema);
 
-var upload = multer({ //multer settings
-    storage: storage
+// var upload = multer({ //multer settings
+//     storage: storage
+// }).single('file');
+
+var datetimestamp = Date.now();
+
+
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'pronovosrubixcube123',
+    metadata: function (req, file, cb) {
+      cb(null, Object.assign({}, req.body));
+    },
+    key: function (req, file, cb) {
+      cb(null, file.fieldname + '-' + datetimestamp + '.' + file.originalname.split('.'))
+    }
+    // metadata: function (req, file, cb) {
+    //     cb(null, {fieldName: file.fieldname});
+    //     },
+    //     key: function (req, file, cb) {
+    //     cb(null, Date.now().toString())
+    //     }
+    })
 }).single('file');
 
 /** API path that will upload the files */
@@ -152,6 +180,7 @@ app.post('/upload', function (req, res) {
         }
     });
 });
+
 
 app.post('/files', function (req, res, next) {
     // res.header("Access-Control-Allow-Origin", "*");
