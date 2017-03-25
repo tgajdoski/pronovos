@@ -14,6 +14,7 @@ var async = require('async');
 var convertMod = require('./lib/convert.js');
 var split = require('./lib/split.js');
 require( 'dotenv' ).load();
+var downloader = require('s3-download-stream')
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -23,6 +24,7 @@ var url = require('url');
   var AWS = require("aws-sdk");
   AWS.config.update({accessKeyId: 'AKIAI7PRX6Q7WRTIVC3A', secretAccessKey: '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'});
 //  var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+
 
 
 mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
@@ -510,12 +512,25 @@ app.get('/folderlistdata/:foldername', function (req, res, next) {
 
 });
    
+app.get('/test', function (req, res) {
+    var file = 'split/file-1490467093264/page00001.png';
+    var config = {
+        client: new AWS.S3(),
+        concurrency: 6,
+        params: {
+            Key: file,
+            Bucket: 'pronovosrubixcube123'
+        }
+    }
+
+    downloader(config)
+    .pipe(res);
+});
+
 
 app.get('/folderlist/:foldername', function (req, res, next) {
     var foldername =  req.params.foldername;
     var fpath = './uploads/split/' + foldername;
-
-   
 
     fs.readdir(fpath, function(error, filelist) {
           if (error) {

@@ -5,11 +5,13 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import {BrowserModule, DomSanitizer,SafeResourceUrl} from '@angular/platform-browser'
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { ThumbImageDirective } from '../thumb-image.directive';
 
 @NgModule({
   declarations: [
     ThumbComponentComponent,
-    PdfViewerComponent
+    PdfViewerComponent,
+    ThumbImageDirective
   ],
   imports: [
     CommonModule,

@@ -9,6 +9,7 @@ import { AppComponent } from './app.component';
 import { PageNotFoundComponent } from './not-found.component';
 import { FileuploadComponentComponent } from './fileupload-component/fileupload-component.component';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
+import { ThumbImageDirective } from './thumb-image.directive';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { PdfViewerComponent } from 'ng2-pdf-viewer';
     FileSelectDirective, 
     FileuploadComponentComponent, 
     ThumbComponentComponent,
-    PdfViewerComponent
+    PdfViewerComponent,
+    ThumbImageDirective
   ],
   imports: [
     BrowserModule,
