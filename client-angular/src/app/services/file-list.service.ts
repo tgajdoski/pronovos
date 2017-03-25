@@ -19,16 +19,17 @@ export class FileListService {
     };
 
 
-    splitFile(fileName: any) {
-          return this._http.get(this.localUrl + '/split/' + fileName)
+
+  
+
+    splitFile(fileName: any, callback) {
+           this._http.get(this.localUrl + '/split/' + fileName)
              .map((res: Response) => res.json())
             .subscribe(res => {
                 console.log(res);
-            });
-
+                callback(res);
+            });    
     };
-
-
 
     createThumbs(fileName: any) {
           return this._http.get(this.localUrl + '/createthumb/' + fileName)

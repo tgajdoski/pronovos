@@ -11,6 +11,7 @@ import { FileListService } from '../services/file-list.service'
 })
 export class FileuploadComponentComponent implements OnInit {
   public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload'});
+ // public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload', disableMultipart:true});
   public fileList: string;
   public _id: any;
   public fileName: any;
@@ -54,6 +55,8 @@ export class FileuploadComponentComponent implements OnInit {
   }
 
 
+
+
  workOcr(e: any, element: any) {
     this._id = element._id;
     this.fileName = element.filename;
@@ -61,12 +64,18 @@ export class FileuploadComponentComponent implements OnInit {
     this.mimetype = element.mimetype;
     this.size = element.size;
     this.uploadDate = element.uploadDate;
- 
-    var splitfiles = this._filelistService.splitFile(this.fileName);
-   var thumbnails = this._filelistService.createThumbs(this.fileName);
-   console.log("THUMBS" + thumbnails);
+     var serviceot = this._filelistService;
+     var filename =  this.fileName;
 
-  }
+    var splitfiles = serviceot.splitFile(this.fileName, function(res){
+        var thumbnails = serviceot.createThumbs(filename);
+    }); 
+   
+    
+     
+
+ 
+   }
 
   deleteFile(e: any, element: any) {
     this._filelistService.deleteFile(element._id)
