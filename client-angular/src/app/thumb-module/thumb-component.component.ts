@@ -23,7 +23,8 @@ export class ThumbComponentComponent implements OnInit {
   public pdfShow :boolean;
   public filebookmarkname :string;
   private sub: any;      
-  private foldername: string;  
+  private foldername: string; 
+  public src = ''; 
 
   constructor(private domSanitizer:DomSanitizer, public route: ActivatedRoute, private _filelistService: FileListService ){
 
@@ -39,6 +40,9 @@ export class ThumbComponentComponent implements OnInit {
                 this.foldername = params['foldername'].replace(/\.[^/.]+$/, ""); 
         });
      
+
+     this.loadFs3image(this.foldername);
+
         this.loadDataDocFileList(this.foldername);
           this.loadPdfFileList(this.foldername);
   }
@@ -82,5 +86,16 @@ export class ThumbComponentComponent implements OnInit {
               this.filedataList = res;              
               console.log(this.filedataList);
             });
+   }
+
+
+
+  loadFs3image(foldername: any) {
+    this._filelistService.getImageS3(foldername)
+      .subscribe((res: any) => {
+       this.src =  res.body;
+         console.log(res);
+      });
+  
    }
 }

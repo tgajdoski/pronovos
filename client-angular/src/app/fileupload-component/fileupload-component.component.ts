@@ -25,6 +25,8 @@ export class FileuploadComponentComponent implements OnInit {
   public pageSize = 1;
   public start = 0;
 
+  
+
  constructor(private _filelistService: FileListService) { 
    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
     //  var responsePath = JSON.parse(response);
@@ -48,6 +50,9 @@ export class FileuploadComponentComponent implements OnInit {
     //    console.log(this.fileCount);
       });
   }
+
+
+
 
   ngOnInit() {
 //    this.loadFileList();

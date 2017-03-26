@@ -2,17 +2,9 @@
     
     <div class="row">
         <div class="col-md-3">
-           <div   *ngFor="let item of filepngList; let i = index" class="thumbnail" (click)="setParams(item, i)">
-                <!--<pdf-viewer [src]= "item"
-                            [page]= 1
-                            [original-size]="false"
-                            style="display: block;"
-                 ></pdf-viewer>-->
-                 <p>{{i+1}}  -  {{filedataList[i]}}</p>
-                    <img src="{{item}}" style="width: 250px;"> 
-            </div>
+      
             <br>
-            
+            <img [src]='src' border="0" />
         </div>
         <div class="col-md-8">
             <div *ngIf="pdfShow">

@@ -22,7 +22,7 @@ mongoose.Promise = global.Promise;
 var url = require('url');
 
   var AWS = require("aws-sdk");
-  AWS.config.update({accessKeyId: 'AKIAI7PRX6Q7WRTIVC3A', secretAccessKey: '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'});
+  AWS.config.update({accessKeyId: 'AKIAJRC36LCHKDRPGVJQ', secretAccessKey: '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'});
 //  var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 
 
@@ -512,7 +512,7 @@ app.get('/folderlistdata/:foldername', function (req, res, next) {
 
 });
    
-app.get('/test', function (req, res) {
+app.get('/test/:foldername', function (req, res) {
     var file = 'split/file-1490467093264/page00001.png';
     var config = {
         client: new AWS.S3(),

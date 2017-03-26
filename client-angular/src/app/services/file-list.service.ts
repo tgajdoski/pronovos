@@ -56,6 +56,14 @@ export class FileListService {
             .map(res => res.json());
     };
 
+
+    getImageS3(folderName: any) {
+      return this
+            ._http
+            .get(this.localUrl + '/test/' + folderName);
+    };
+
+
     getDataFileList(folderName: any) {
         return this
             ._http
