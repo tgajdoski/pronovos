@@ -199,7 +199,7 @@ app.post('/upload', function (req, res, err) {
 
                     // Configure the request
                     var options = {
-                        uri: 'http://127.0.0.1:3001/files',
+                        uri: 'http://drawback.evolutionit.com/files',
                         method: 'POST',
                         headers: headers,
                         body: myJSONObject
