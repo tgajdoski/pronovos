@@ -24,6 +24,8 @@ coverage
 .lock-wscript
 
 node-app/.env
+/node-app/.env
+.env
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
