@@ -28,6 +28,9 @@ export class FileuploadComponentComponent implements OnInit {
   
 
  constructor(private _filelistService: FileListService) { 
+   this.uploader.onBeforeUploadItem = (item) => {
+    item.withCredentials = false;
+  }
    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
     //  var responsePath = JSON.parse(response);
     // console.log(response, responsePath);// the url will be in the response

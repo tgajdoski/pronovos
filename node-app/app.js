@@ -21,13 +21,26 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 var url = require('url');
-var s3 = require('s3');
+
 
  dotenv.load();
 
 var AWS = require("aws-sdk");
 
 AWS.config.update({accessKeyId: process.env.AWS_ACCESS_KEY_ID, secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY});
+
+
+
+app.use(function (req, res, next) { //allow cross origin requests
+    res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Credentials", true);
+    next();
+});
+
+var s3 = require('s3');
+
 // upload to s3 from local ./uploads folder - after file is uploaded to node-app inside uploads
 var client = s3.createClient({
   maxAsyncS3: 20,     // this is the default
@@ -38,7 +51,7 @@ var client = s3.createClient({
   s3Options: {
      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
      secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY,
-    region:  process.env.AWS_REGION
+     region:  process.env.AWS_REGION
   },
 });
 
@@ -50,24 +63,11 @@ mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
     }
 );
 
-app.use(function (req, res, next) { //allow cross origin requests
-    res.setHeader("Access-Control-Allow-Methods", "POST, PUT, OPTIONS, DELETE, GET");
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    res.header("Access-Control-Allow-Credentials", true);
-   
-    // console.log("WTF");
-    
-    //     console.log( process.env.AWS_ACCESS_KEY_ID);
-    //     console.log( process.env.AWS_SECRET_ACCESS_KEY);
-    next();
-});
-
 /** Serving from the same express Server
     No cors required */
 app.use(express.static('../client'));
 //app.use(express.static('./uploads/split'));
-app.use("/uploads",express.static('./uploads'));
+// app.use("/uploads",express.static('./uploads'));
 
 app.use(bodyParser.json());
 
@@ -144,81 +144,83 @@ var datetimestamp = Date.now();
 
 
 /** API path that will upload the files */
-app.post('/upload', function (req, res) {
-    upload(req, res, function (err) {
-        // console.log(req.file);
-        if (err) {
-            res.json({error_code: 1, err_desc: err});
-            return;
-        } else {
-            // ako nema greska postioraj za da zapisis vo mongodb spremi fileModel object
-            var singleFile = new fileModel();
-            singleFile.fieldname = req.file.fieldname;
-            singleFile.originalname = req.file.originalname;
-            singleFile.encoding = req.file.encoding;
-            singleFile.mimetype = req.file.mimetype;
-            singleFile.destination = req.file.destination;
-            singleFile.filename = req.file.filename;
-            singleFile.path = req.file.path;
-            singleFile.size = req.file.size;
-            singleFile.uploadDate = new Date();
-
-            var myJSONObject = JSON.stringify(singleFile);
-
-            // ovoj del sakam da kopira nakaj s3  - se pravat params
-            var locpath = "./uploads/"+req.file.filename;
-            var params = {
-                localFile: "./uploads/"+req.file.filename,
-                s3Params: {
-                    Bucket: "pronovosrubixcube123",
-                    Key: req.file.filename
-                },
-            };
-            var uploader = client.uploadFile(params);
-            // uploader.on('error', function(err) {
-            // console.error("unable to upload:", err.stack);
-            // });
-             uploader.on('progress', function() {
-             console.log("progress", uploader.progressMd5Amount,
-                         uploader.progressAmount, uploader.progressTotal);
-             });
-            uploader.on('end', function() {
-               //    fs.unlinkSync(locpath);
-                 console.log("done uploading  " + locpath);
-            });
-
-            // do tuka treba da e iskopiran na S3 veke
-
-
-            // ovoj del e za da se snimi vo mongoDB so post kon /files i so parametrite 
-            // Set the headers
-            var headers = {
-                'Content-Type': 'application/json'
-            };
-
-            // Configure the request
-            var options = {
-                uri: 'http://localhost:3001/files',
-                method: 'POST',
-                headers: headers,
-                body: myJSONObject
-            };
-
-            // Start the request
-            request(options, function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    // Print out the response body
-                 //   console.log(body);
-                    res.json({error_code: 0, err_desc: null});
+app.post('/upload', function (req, res, err) {
+            upload(req, res, function (err) {
+                if (err) {
+                    res.json({error_code: 1, err_desc: err});
+                    return;
                 } else {
-                    console.log(error);
-                    res.json({error_code: 1, err_desc: error});
+                    // ako nema greska postioraj za da zapisis vo mongodb spremi fileModel object
+                    var singleFile = new fileModel();
+                    singleFile.fieldname = req.file.fieldname;
+                    singleFile.originalname = req.file.originalname;
+                    singleFile.encoding = req.file.encoding;
+                    singleFile.mimetype = req.file.mimetype;
+                    singleFile.destination = req.file.destination;
+                    singleFile.filename = req.file.filename;
+                    singleFile.path = req.file.path;
+                    singleFile.size = req.file.size;
+                    singleFile.uploadDate = new Date();
+
+                    var myJSONObject = JSON.stringify(singleFile);
+
+                    // ovoj del sakam da kopira nakaj s3  - se pravat params
+                    var locpath = "./uploads/"+req.file.filename;
+                    var params = {
+                        localFile: "./uploads/"+req.file.filename,
+                        s3Params: {
+                            Bucket: "pronovosrubixcube123",
+                            Key: req.file.filename
+                        },
+                    };
+                    var uploader = client.uploadFile(params);
+                    // uploader.on('error', function(err) {
+                    // console.error("unable to upload:", err.stack);
+                    // });
+                    uploader.on('progress', function() {
+                    console.log("progress", uploader.progressMd5Amount,
+                                uploader.progressAmount, uploader.progressTotal);
+                    });
+                    uploader.on('end', function() {
+                    //    fs.unlinkSync(locpath);
+                        console.log("done uploading  " + locpath);
+                    });
+
+                    // do tuka treba da e iskopiran na S3 veke
+
+
+                    // ovoj del e za da se snimi vo mongoDB so post kon /files i so parametrite 
+                    // Set the headers
+                    var headers = {
+                        "Access-Control-Allow-Credentials" : "true",
+                        "Access-Control-Allow-Origin" : "*",
+                        'Content-Type': 'application/json'
+                    };
+
+                    // Configure the request
+                    var options = {
+                        uri: 'http://localhost:3001/files',
+                        method: 'POST',
+                        headers: headers,
+                        body: myJSONObject
+                    };
+
+                    // Start the request
+                    request(options, function (error, response, body) {
+                        if (!error && response.statusCode == 200) {
+                            // Print out the response body
+                        //   console.log(body);
+                            res.json({error_code: 0, err_desc: null});
+                        } else {
+                            console.log(error);
+                            res.json({error_code: 1, err_desc: error});
+                        }
+                    });
+
+                    //res.json({error_code: 0, err_desc: null});
                 }
             });
-
-            //res.json({error_code: 0, err_desc: null});
-        }
-    });
+       
 });
 
 
