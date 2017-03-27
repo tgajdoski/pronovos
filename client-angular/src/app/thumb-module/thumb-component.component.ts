@@ -48,13 +48,11 @@ export class ThumbComponentComponent implements OnInit {
   }
     
      setParams(item :any, datafileindex: any){
-       console.log("TUKAA ZA NASLOVOT" + item);
-       console.log(datafileindex);
        this.pdfShow = true;
        var str = item;
         var rest = str.replace(".png", ".pdf"); 
         this.filebookmarkname = this.filedataList[datafileindex];
-        console.log(rest);
+        //console.log(rest);
         this.pdfSrc=rest;
         this.pageurl = this.domSanitizer.bypassSecurityTrustResourceUrl(this.pdfSrc);
     }

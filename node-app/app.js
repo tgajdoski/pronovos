@@ -14,7 +14,7 @@ var async = require('async');
 
 var convertMod = require('./lib/convert.js');
 var split = require('./lib/split.js');
-require( 'dotenv' ).load();
+var dotenv  = require('dotenv');
 var downloader = require('s3-download-stream')
 
 var mongoose = require('mongoose');
@@ -23,12 +23,12 @@ mongoose.Promise = global.Promise;
 var url = require('url');
 var s3 = require('s3');
 
+ dotenv.load();
+
 var AWS = require("aws-sdk");
-AWS.config.update({accessKeyId: 'AKIAJSM5HM3EZIBAK3IA', secretAccessKey: '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'});
-var s33 = new AWS.S3({apiVersion: '2006-03-01'});
 
+AWS.config.update({accessKeyId: process.env.AWS_ACCESS_KEY_ID, secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY});
 // upload to s3 from local ./uploads folder - after file is uploaded to node-app inside uploads
-
 var client = s3.createClient({
   maxAsyncS3: 20,     // this is the default
   s3RetryCount: 3,    // this is the default
@@ -36,9 +36,9 @@ var client = s3.createClient({
   multipartUploadThreshold: 20971520, // this is the default (20 MB)
   multipartUploadSize: 15728640, // this is the default (15 MB)
   s3Options: {
-    accessKeyId: "AKIAJSM5HM3EZIBAK3IA",
-    secretAccessKey: "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",
-    region: "us-west-2"
+     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+     secretAccessKey:  process.env.AWS_SECRET_ACCESS_KEY,
+    region:  process.env.AWS_REGION
   },
 });
 
@@ -55,6 +55,11 @@ app.use(function (req, res, next) { //allow cross origin requests
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Credentials", true);
+   
+    // console.log("WTF");
+    
+    //     console.log( process.env.AWS_ACCESS_KEY_ID);
+    //     console.log( process.env.AWS_SECRET_ACCESS_KEY);
     next();
 });
 
@@ -173,10 +178,10 @@ app.post('/upload', function (req, res) {
             // uploader.on('error', function(err) {
             // console.error("unable to upload:", err.stack);
             // });
-            // uploader.on('progress', function() {
-            // console.log("progress", uploader.progressMd5Amount,
-            //             uploader.progressAmount, uploader.progressTotal);
-            // });
+             uploader.on('progress', function() {
+             console.log("progress", uploader.progressMd5Amount,
+                         uploader.progressAmount, uploader.progressTotal);
+             });
             uploader.on('end', function() {
                //    fs.unlinkSync(locpath);
                  console.log("done uploading  " + locpath);
