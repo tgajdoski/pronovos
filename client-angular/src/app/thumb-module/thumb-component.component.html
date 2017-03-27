@@ -1,16 +1,25 @@
 <div class="container">
     
     <div class="row">
-        <div class="col-md-3">
-      
-            <br>
-            <img [src]='src' border="0" />
+        <div class="col-md-3" style="padding-top: 20px">
+            <div class="panel panel-default" style="height: 80vh; overflow: auto;">
+                 <div class="panel-heading">Thumbnail preview</div>
+                  <div class="panel-body">
+                        <div   *ngFor="let item of filepngList; let i = index" class="thumbnail" (click)="setParams(item, i)">
+                            <p>{{i+1}}  -  {{filedataList[i]}}</p>
+                            <img src="{{item}}" style="width: 250px;"> 
+                            <br>
+                        </div>
+                  </div>
+             </div>     
         </div>
         <div class="col-md-8">
-            <div *ngIf="pdfShow">
-                 <h3>{{filebookmarkname}}</h3>
-                <iframe width="900" height="700" [src]="pageurl" type="application/pdf"></iframe>
-            </div>
+             <!--<div id="root">-->
+                <div *ngIf="pdfShow">
+                    <h3>{{filebookmarkname}}</h3>
+                <iframe width="850" height="720" [src]="pageurl" type="application/pdf"></iframe>
+                 </div>
+            <!--</div>-->
         </div>
     </div>
 </div>

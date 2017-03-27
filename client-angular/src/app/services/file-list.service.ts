@@ -47,14 +47,6 @@ export class FileListService {
             .map(res => res.json());
     };
 
-    
-
-    getPdfFileList(folderName: any) {
-        return this
-            ._http
-            .get(this.localUrl + '/folderlist/' + folderName) 
-            .map(res => res.json());
-    };
 
 
     getImageS3(folderName: any) {
@@ -70,7 +62,26 @@ export class FileListService {
             .get(this.localUrl + '/folderlistdata/' + folderName) 
             .map(res => res.json());
     };
+
     
+    getPdfFileList(folderName: any) {
+        return this
+            ._http
+            .get(this.localUrl + '/folderlist/' + folderName) 
+            .map(res => res.json());
+    };
+
+
+    
+    gets3PdfFileList(folderName: any) {
+        return this
+            ._http
+            .get(this.localUrl + '/s3folderlist/' + folderName) 
+            .map(res => res.json());
+    };
+
+
+
 
     deleteFile(fileid : any) {
         console.log("adsdasdasd :  " + fileid);

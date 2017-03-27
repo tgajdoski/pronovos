@@ -41,14 +41,14 @@ export class ThumbComponentComponent implements OnInit {
         });
      
 
-     this.loadFs3image(this.foldername);
+    //  this.loadFs3image(this.foldername);
 
         this.loadDataDocFileList(this.foldername);
           this.loadPdfFileList(this.foldername);
   }
     
      setParams(item :any, datafileindex: any){
-       console.log(item);
+       console.log("TUKAA ZA NASLOVOT" + item);
        console.log(datafileindex);
        this.pdfShow = true;
        var str = item;
@@ -60,7 +60,8 @@ export class ThumbComponentComponent implements OnInit {
     }
 
     loadPdfFileList(foldername: any) {
-      this._filelistService.getPdfFileList(foldername)
+  //    this._filelistService.getPdfFileList(foldername)
+       this._filelistService.gets3PdfFileList(foldername)
       .subscribe((res: any) => {
         this.filepdfList =[];
          this.filepngList =[];
@@ -90,14 +91,14 @@ export class ThumbComponentComponent implements OnInit {
 
 
 
-  loadFs3image(foldername: any) {
-    this._filelistService.getImageS3(foldername)
-      .subscribe((res: any) => {
-      // this.src =  'data:image/png;base64,' + _arrayBufferToBase64(res._body);
-        this.src =  res._body;
-         console.log(res);
-      });
-  
+  gets3imageUrl(foldername: any, filename:any) {
+    // this._filelistService.getImageS3(foldername)
+    //   .subscribe((res: any) => {
+    //   // this.src =  'data:image/png;base64,' + _arrayBufferToBase64(res._body);
+    //     this.src =  res._body;
+    //      console.log(res);
+    //   });
+    this.src = "http://localhost:3001/"+foldername+"/"+filename;
    }
 }
 

@@ -1,5 +1,6 @@
 var express = require('express');
 var request = require('request');
+
 // var http = require("http");
 var app = express();
 var bodyParser = require('body-parser');
@@ -20,12 +21,26 @@ var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
 var url = require('url');
+var s3 = require('s3');
 
-  var AWS = require("aws-sdk");
-  AWS.config.update({accessKeyId: 'AKIAJRC36LCHKDRPGVJQ', secretAccessKey: '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'});
-//  var s3 = new AWS.S3({apiVersion: '2006-03-01'});
+var AWS = require("aws-sdk");
+AWS.config.update({accessKeyId: 'AKIAJSM5HM3EZIBAK3IA', secretAccessKey: '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'});
+var s33 = new AWS.S3({apiVersion: '2006-03-01'});
 
+// upload to s3 from local ./uploads folder - after file is uploaded to node-app inside uploads
 
+var client = s3.createClient({
+  maxAsyncS3: 20,     // this is the default
+  s3RetryCount: 3,    // this is the default
+  s3RetryDelay: 1000, // this is the default
+  multipartUploadThreshold: 20971520, // this is the default (20 MB)
+  multipartUploadSize: 15728640, // this is the default (15 MB)
+  s3Options: {
+    accessKeyId: "AKIAJSM5HM3EZIBAK3IA",
+    secretAccessKey: "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",
+    region: "us-west-2"
+  },
+});
 
 mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
     if (err) 
@@ -121,20 +136,6 @@ var upload = multer({ //multer settings
 var datetimestamp = Date.now();
 
 
-// upload to s3 from local ./uploads folder - after file is uploaded to node-app inside uploads
-var s3 = require('s3');
-var client = s3.createClient({
-  maxAsyncS3: 20,     // this is the default
-  s3RetryCount: 3,    // this is the default
-  s3RetryDelay: 1000, // this is the default
-  multipartUploadThreshold: 20971520, // this is the default (20 MB)
-  multipartUploadSize: 15728640, // this is the default (15 MB)
-  s3Options: {
-    accessKeyId: "AKIAI7PRX6Q7WRTIVC3A",
-    secretAccessKey: "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",
-    region: "us-west-2"
-  },
-});
 
 
 /** API path that will upload the files */
@@ -145,9 +146,6 @@ app.post('/upload', function (req, res) {
             res.json({error_code: 1, err_desc: err});
             return;
         } else {
-
-            
-
             // ako nema greska postioraj za da zapisis vo mongodb spremi fileModel object
             var singleFile = new fileModel();
             singleFile.fieldname = req.file.fieldname;
@@ -418,27 +416,28 @@ app.get('/split/:filename', function (req, res, next) {
 
 
 app.get('/createthumb/:filename', function (req, res, next) {
-    //ova e za lokalno da se pravat THUMBS
-//     var file_name =  req.params.filename;
-//     var relative_path = path.join('uploads',file_name);
-//   //    console.log(relative_path);
-//     var pdf_path = path.join(__dirname, relative_path);
-//   //  console.log ("pdf_path : " + pdf_path);
+  /* 
+   ova e za lokalno da se pravat THUMBS
+    var file_name =  req.params.filename;
+    var relative_path = path.join('uploads',file_name);
+  //    console.log(relative_path);
+    var pdf_path = path.join(__dirname, relative_path);
+  //  console.log ("pdf_path : " + pdf_path);
     
-//    console.log ("pdf_path : " + pdf_path);
-//     console.log ("file_name : " + file_name.replace(/\.[^/.]+$/, ""));
+   console.log ("pdf_path : " + pdf_path);
+    console.log ("file_name : " + file_name.replace(/\.[^/.]+$/, ""));
   
 
-//     convertMod.convertThumsPdf(pdf_path, file_name.replace(/\.[^/.]+$/, ""), function (err, output) {
-//      //    console.log(err);
-//      //    console.log(output);
-//          res.json(output);
-//     });
+    convertMod.convertThumsPdf(pdf_path, file_name.replace(/\.[^/.]+$/, ""), function (err, output) {
+     //    console.log(err);
+     //    console.log(output);
+         res.json(output);
+    });
 
 
     // ovde ke treba ova da se skokne i da se vika lambdata za splituvanje
     // VIKANJE LAMBDA
-
+*/
      var file_name =  req.params.filename;
     var relative_path = path.join('uploads',file_name);
     // console.log(file_name);
@@ -512,21 +511,6 @@ app.get('/folderlistdata/:foldername', function (req, res, next) {
 
 });
    
-app.get('/test/:foldername', function (req, res) {
-    var file = 'split/file-1490467093264/page00001.png';
-    var config = {
-        client: new AWS.S3(),
-        concurrency: 6,
-        params: {
-            Key: file,
-            Bucket: 'pronovosrubixcube123'
-        }
-    }
-
-    downloader(config)
-    .pipe(res);
-});
-
 
 app.get('/folderlist/:foldername', function (req, res, next) {
     var foldername =  req.params.foldername;
@@ -553,6 +537,91 @@ app.get('/folderlist/:foldername', function (req, res, next) {
           }
         });
 });
+
+
+
+// app.get('/s3folderlistdata/:foldername', function (req, res, next) {
+   
+//     var foldername =  req.params.foldername;
+//     var fpath = './uploads/split/' + foldername;
+
+//         fs.readFile( fpath + '/doc_data.txt', function(err, data) {
+//             if(err) throw err;
+//             var array = data.toString().split("\n");
+//             var num = 0; 
+//             var arrayFinal =  [];
+//             for(var i in array) {
+//                 if (array[i].startsWith('BookmarkTitle:') )
+//                 {
+//                     num++;
+//                 arrayFinal.push(array[i].replace('BookmarkTitle:', ''));
+//                 }
+//             }
+//              res.contentType('application/json');
+//             res.send(JSON.stringify(arrayFinal));
+//         });
+
+// });
+   
+
+app.get('/s3folderlist/:foldername', function (req, res, next) {
+            var foldername =  req.params.foldername;
+            var fpath = 'split/' + foldername + '/';
+            var b = 'pronovosrubixcube123';
+            var stagingparams = {
+                s3Params: {
+                Bucket: 'pronovosrubixcube123',
+                Prefix: fpath
+                }
+            };
+
+            var listobj = client.listObjects(stagingparams);
+            var dataLst = [];
+            listobj.on('data', function(data) {
+                dataLst = dataLst.concat(data.Contents);
+            });
+            listobj.on('error', function(error) {
+                console.log(error);
+            });
+            listobj.on('end', function() {
+                if (listobj.progressAmount === 1) {
+                     var files = [];
+                 //   console.log(JSON.stringify(dataLst));
+                    dataLst.forEach(obj => {
+                        console.log(obj);
+                         var hosturl = "http://localhost:3001/thumb/";
+                         var pathpfd = url.resolve(hosturl, foldername) + "/" + obj.Key.split('/').pop();
+                         var pdfname =  obj.Key;
+                         files.push({pdfPath: pathpfd, pdfName: pdfname});
+                    });
+                // kolku se: console.log("objects Found " + JSON.stringify(listobj.objectsFound));
+                    res.contentType('application/json'); 
+                    res.send(JSON.stringify(files));
+                }
+            })
+
+});
+
+
+// vrakaj mi bilo kakov file vo stream direktno na client
+app.get('/thumb/:foldername/:filename', function (req, res) {
+
+    var folderName = req.params.foldername;
+    var filename = req.params.filename
+
+    var file = 'split/'+folderName+'/' + filename;
+    var config = {
+        client: new AWS.S3(),
+        concurrency: 6,
+        params: {
+            Key: file,
+            Bucket: 'pronovosrubixcube123'
+        }
+    }
+    downloader(config)
+    .pipe(res);
+});
+
 
 app.listen('3001', function () {
     console.log('running on 3001...');
