@@ -10,7 +10,7 @@ import { FileListService } from '../services/file-list.service'
   providers: [FileListService]
 })
 export class FileuploadComponentComponent implements OnInit {
-  public uploader:FileUploader = new FileUploader({url:'http://127.0.0.1:3001/upload'});
+  public uploader:FileUploader = new FileUploader({url:'http://drawback.evolutionit.com/upload'});
  // public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload', disableMultipart:true});
   public fileList: string;
   public _id: any;

@@ -55,7 +55,7 @@ var client = s3.createClient({
   },
 });
 
-mongoose.connect('mongodb://127.0.0.1:27017/files', function (err, connect) {
+mongoose.connect('mongodb://localhost:27017/files', function (err, connect) {
     if (err) 
         console.log("connection err", err);
     else 
@@ -532,7 +532,7 @@ app.get('/folderlist/:foldername', function (req, res, next) {
             
             filelist.forEach(file => {
                 
-               var hosturl = "http://127.0.0.1:3001";
+               var hosturl = "http://drawback.evolutionit.com";
               
                  var pathpfd = url.resolve(hosturl, fpath) + "/" + file;
                
@@ -596,7 +596,7 @@ app.get('/s3folderlist/:foldername', function (req, res, next) {
                  //   console.log(JSON.stringify(dataLst));
                     dataLst.forEach(obj => {
                         console.log(obj);
-                         var hosturl = "http://127.0.0.1:3001/thumb/";
+                         var hosturl = "http://drawback.evolutionit.com/thumb/";
                          var pathpfd = url.resolve(hosturl, foldername) + "/" + obj.Key.split('/').pop();
                          var pdfname =  obj.Key;
                          files.push({pdfPath: pathpfd, pdfName: pdfname});
