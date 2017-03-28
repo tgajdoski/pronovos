@@ -11,10 +11,10 @@ exports.handler = (event, context, callback) => {
     
   process.env['PATH'] = process.env['PATH'] + ':' + process.env['LAMBDA_TASK_ROOT'];
 
-    var bucketName = 'rubixcube';
-    var imagefileName = 'test.png';
-  //  var bucketName = event.bucketName;
-  //  var imagefileName = event.imagefileName;
+  //  var bucketName = 'rubixcube';
+  //  var imagefileName = 'test.png';
+    var bucketName = event.bucketName;
+    var imagefileName = event.imagefileName;
     
     console.log( bucketName + " " + imagefileName);
   // var params = {Bucket: 'pronovosrubixcube123', Key: 'example-abstract.pdf'};
@@ -30,7 +30,7 @@ exports.handler = (event, context, callback) => {
         console.log(ls.stdout.toString());
 
     
-        exec('LD_LIBRARY_PATH=./lib TESSDATA_PREFIX=./ ./tesseract /tmp/'+imagefileName+' stdout -l eng -psm 8', (error, stdout, stderr) => {
+        exec('LD_LIBRARY_PATH=./lib TESSDATA_PREFIX=./ ./tesseract /tmp/'+imagefileName+' stdout -l eng', (error, stdout, stderr) => {
         if (error) {
             console.log(`exec error: ${error}`);
             callback('error', JSON.stringify(error));
