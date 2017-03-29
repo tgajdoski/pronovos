@@ -9,45 +9,69 @@ var async = require('async');
 var convertMod = require('./lib/convert');
 var split = require('./lib/split.js');
 
+
+const exec = require('child_process').exec;
+var sync = require('child_process').spawnSync;
+
+
+function vidi(data, callback) {
+  var cmd = 'ls'
+  exec(cmd, function (err, stdout, stderr) {
+    // call extraArgs with the "data" param and a callback as well
+    extraArgs(err, stdout, stderr, data, callback) 
+  })
+}
+
+function extraArgs(err, stdout, stderr, data, callback) {
+  console.log(stdout);
+}
+
+vidi('asdasd',null)
+     
+
+
 // var AWS = require("aws-sdk");
 
 //AWS.config.update({accessKeyId: 'AKIAI7PRX6Q7WRTIVC3A', secretAccessKey: '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'});
 
-var s3 = require('s3');
+// var s3 = require('s3');
 
-var client = s3.createClient({
-  maxAsyncS3: 20,     // this is the default
-  s3RetryCount: 3,    // this is the default
-  s3RetryDelay: 1000, // this is the default
-  multipartUploadThreshold: 20971520, // this is the default (20 MB)
-  multipartUploadSize: 15728640, // this is the default (15 MB)
-  s3Options: {
-    accessKeyId: "AKIAJSM5HM3EZIBAK3IA",
-    secretAccessKey: "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",
-    region: "us-west-2"
-  },
-});
+// var client = s3.createClient({
+//   maxAsyncS3: 20,     // this is the default
+//   s3RetryCount: 3,    // this is the default
+//   s3RetryDelay: 1000, // this is the default
+//   multipartUploadThreshold: 20971520, // this is the default (20 MB)
+//   multipartUploadSize: 15728640, // this is the default (15 MB)
+//   s3Options: {
+//     accessKeyId: "AKIAJSM5HM3EZIBAK3IA",
+//     secretAccessKey: "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",
+//     region: "us-west-2"
+//   },
+// });
 
 
-var params = {
-  localFile: "./uploads/file-1490454379944.pdf",
+// var params = {
+//   localFile: "./uploads/file-1490454379944.pdf",
 
-  s3Params: {
-    Bucket: "pronovosrubixcube123",
-    Key: "file-1490454379944.pdf"
-  },
-};
-var uploader = client.uploadFile(params);
-uploader.on('error', function(err) {
-  console.error("unable to upload:", err.stack);
-});
-uploader.on('progress', function() {
-  console.log("progress", uploader.progressMd5Amount,
-            uploader.progressAmount, uploader.progressTotal);
-});
-uploader.on('end', function() {
-  console.log("done uploading");
-});
+//   s3Params: {
+//     Bucket: "pronovosrubixcube123",
+//     Key: "file-1490454379944.pdf"
+//   },
+// };
+// var uploader = client.uploadFile(params);
+// uploader.on('error', function(err) {
+//   console.error("unable to upload:", err.stack);
+// });
+// uploader.on('progress', function() {
+//   console.log("progress", uploader.progressMd5Amount,
+//             uploader.progressAmount, uploader.progressTotal);
+// });
+// uploader.on('end', function() {
+//   console.log("done uploading");
+// });
+
+
+
 // // ispali lambda za THUMBNAILS
 
 //  AWS.config.update({accessKeyId: 'AKIAIG5DVR42CZZVGTVQ', secretAccessKey: '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'});

@@ -4,7 +4,7 @@ var aws = require('aws-sdk');
 var s3 = new aws.S3();
 const fs = require('fs');
 const util = require('util');
-const exec = require('child_process').exec;
+const exec = require('child_process').execSync;
 var sync = require('child_process').spawnSync;
 
 exports.handler = (event, context, callback) => {
@@ -19,18 +19,12 @@ exports.handler = (event, context, callback) => {
     console.log( bucketName + " " + imagefileName);
   // var params = {Bucket: 'pronovosrubixcube123', Key: 'example-abstract.pdf'};
    var params = {Bucket: bucketName, Key: imagefileName};
-    
+     var ocrText = 'ne docekuva';
     s3.getObject(params).promise().then( data => {
      // console.log("snimam na tmp");
         fs.writeFileSync("/tmp/"+imagefileName,  data.Body, 'utf8');   
-       
-        // check tmp content
-        var ls = sync('ls', ['-l', '/tmp/']);
-     //   console.log(util.inspect(ls, false, null));
-        console.log(ls.stdout.toString());
-
-    
-        exec('LD_LIBRARY_PATH=./lib TESSDATA_PREFIX=./ ./tesseract /tmp/'+imagefileName+' stdout -l eng', (error, stdout, stderr) => {
+          
+     var vvv = exec('LD_LIBRARY_PATH=./lib TESSDATA_PREFIX=./ ./tesseract /tmp/'+imagefileName+' stdout -l eng', (error, stdout, stderr) => {
         if (error) {
             console.log(`exec error: ${error}`);
             callback('error', JSON.stringify(error));
@@ -40,7 +34,13 @@ exports.handler = (event, context, callback) => {
             callback('stdout', JSON.stringify(stdout));
           }
         });
-       callback(null, 'ok');
-    
+        // });
+    //  console.log(vvv);
+      callback(null, JSON.stringify(vvv.toString('utf8')));
+   
     });
 };
+
+      
+
+   

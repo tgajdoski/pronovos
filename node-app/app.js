@@ -98,6 +98,18 @@ var storage = multer.diskStorage({ //multers disk storage settings
     }
 });
 
+var storageocr = multer.diskStorage({ //multers disk storage settings
+    destination: function (req, file, cb) {
+        cb(null, './uploads/ocr/');
+    },
+    filename: function (req, file, cb) {
+        console.log(file);
+        file
+        var datetimestamp = Date.now();
+        cb(null, file.fieldname + '-' + datetimestamp + '.png');
+    }
+});
+
 
 
 var Schema = mongoose.Schema;
@@ -139,9 +151,6 @@ var upload = multer({ //multer settings
 }).single('file');
 
 var datetimestamp = Date.now();
-
-
-
 
 /** API path that will upload the files */
 app.post('/upload', function (req, res, err) {
@@ -221,6 +230,69 @@ app.post('/upload', function (req, res, err) {
                 }
             });
        
+});
+
+var uploadOCR = multer({ //multer settings
+    storage: storageocr
+}).single('file');
+
+app.post('/PostOCRImage', function (req, res, err) {
+            uploadOCR(req, res, function (err) {
+                if (err) {
+                    res.json({error_code: 1, err_desc: err});
+                    return;
+                } else {
+                    var postedFile = req.file;
+                    
+                    console.log(req.file.filename.replace(/\.[^/.]+$/, ""));
+                    var filenamefinal = req.file.filename.replace(/\.[^/.]+$/, "") + ".png";
+                    // ovoj del sakam da kopira nakaj s3  - se pravat params
+                    var locpath = "./uploads/ocr/";
+                    var params = {
+                        localFile: "./uploads/ocr/"+filenamefinal,
+                        s3Params: {
+                            Bucket: "pronovosrubixcube123",
+                            Key: "ocr/"+filenamefinal
+                        },
+                    };
+                    console.log(params);
+
+
+                    var uploader = client.uploadFile(params);
+                    // uploader.on('error', function(err) {
+                    // console.error("unable to upload:", err.stack);
+                    // });
+                    uploader.on('progress', function() {
+                    console.log("progress", uploader.progressMd5Amount,
+                                uploader.progressAmount, uploader.progressTotal);
+                    });
+                    uploader.on('end', function() {
+                    //    fs.unlinkSync(locpath);
+                        // console.log("done uploading  " + locpath);
+                        // console.log("OPALI JA LAMBDATA I VRATI TEXT");
+                             var lambda = new AWS.Lambda({region: 'us-west-2', apiVersion: '2015-03-31'});
+ 
+                        var args = {
+                          bucketName: 'pronovosrubixcube123',
+                          folderName: 'ocr/',
+                          pdffileName: filenamefinal
+                      }
+
+                        var params = {
+                            FunctionName: 'arn:aws:lambda:us-west-2:001625110443:function:tesseractLambda', /* required */
+                            Payload:  JSON.stringify(args)
+                        };
+                        lambda.invoke(params, function(err, data) {
+                            if (err) console.log(err, err.stack); 
+                            else{
+                                console.log("DATATATATAT " + data[0].toString());
+                                res.json(data); 
+                            }
+                        });
+
+                    });
+                }
+    });
 });
 
 
