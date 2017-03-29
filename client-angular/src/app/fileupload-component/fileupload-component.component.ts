@@ -35,6 +35,16 @@ export class FileuploadComponentComponent implements OnInit {
     //  var responsePath = JSON.parse(response);
     // console.log(response, responsePath);// the url will be in the response
    // console.log("se sredi");
+
+   this.uploader.onProgressAll = (progress:any) => {
+      item.progress = progress;
+      // this.showProgress = true;
+      // this.incrementValue();
+      // console.log(this.showProgress);
+      // console.log('before', progress);
+
+    }
+
     this.paginateFiles();
   };
  }

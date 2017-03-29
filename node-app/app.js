@@ -244,7 +244,7 @@ app.post('/PostOCRImage', function (req, res, err) {
                 } else {
                     var postedFile = req.file;
                     
-                    console.log(req.file.filename.replace(/\.[^/.]+$/, ""));
+                 //   console.log(req.file.filename.replace(/\.[^/.]+$/, ""));
                     var filenamefinal = req.file.filename.replace(/\.[^/.]+$/, "") + ".png";
                     // ovoj del sakam da kopira nakaj s3  - se pravat params
                     var locpath = "./uploads/ocr/";
@@ -252,10 +252,10 @@ app.post('/PostOCRImage', function (req, res, err) {
                         localFile: "./uploads/ocr/"+filenamefinal,
                         s3Params: {
                             Bucket: "pronovosrubixcube123",
-                            Key: "ocr/"+filenamefinal
+                            Key: filenamefinal
                         },
                     };
-                    console.log(params);
+                 //   console.log(params);
 
 
                     var uploader = client.uploadFile(params);
@@ -267,26 +267,24 @@ app.post('/PostOCRImage', function (req, res, err) {
                                 uploader.progressAmount, uploader.progressTotal);
                     });
                     uploader.on('end', function() {
-                    //    fs.unlinkSync(locpath);
-                        // console.log("done uploading  " + locpath);
-                        // console.log("OPALI JA LAMBDATA I VRATI TEXT");
-                             var lambda = new AWS.Lambda({region: 'us-west-2', apiVersion: '2015-03-31'});
+                       var lambda = new AWS.Lambda({region: 'us-west-2', apiVersion: '2015-03-31'});
  
                         var args = {
                           bucketName: 'pronovosrubixcube123',
-                          folderName: 'ocr/',
-                          pdffileName: filenamefinal
+                        //   folderName: 'ocr/',
+                          imagefileName: filenamefinal
                       }
 
                         var params = {
+                            InvocationType: 'RequestResponse',
                             FunctionName: 'arn:aws:lambda:us-west-2:001625110443:function:tesseractLambda', /* required */
                             Payload:  JSON.stringify(args)
                         };
                         lambda.invoke(params, function(err, data) {
-                            if (err) console.log(err, err.stack); 
+                            if (err) 
+                                console.log(err, err.stack); 
                             else{
-                                console.log("DATATATATAT " + data[0].toString());
-                                res.json(data); 
+                                res.json(data.Payload); 
                             }
                         });
 
