@@ -1,4 +1,7 @@
 
+- da se stavi ajax loading se dodeka ne se zavrsat procesite
+na ocr - split i na kraj na view thumbs
+
 
 
 ________________________________________________________________________________________
