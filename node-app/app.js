@@ -244,7 +244,7 @@ app.post('/PostOCRImage', function (req, res, err) {
                 } else {
                     var postedFile = req.file;
                     
-                 //   console.log(req.file.filename.replace(/\.[^/.]+$/, ""));
+                    console.log(req.file.filename.replace(/\.[^/.]+$/, ""));
                     var filenamefinal = req.file.filename.replace(/\.[^/.]+$/, "") + ".png";
                     // ovoj del sakam da kopira nakaj s3  - se pravat params
                     var locpath = "./uploads/ocr/";
@@ -281,9 +281,13 @@ app.post('/PostOCRImage', function (req, res, err) {
                             Payload:  JSON.stringify(args)
                         };
                         lambda.invoke(params, function(err, data) {
-                            if (err) 
+                            if (err) {
                                 console.log(err, err.stack); 
+                                 res.json(err); 
+                            }
                             else{
+                          //      console.log(data); 
+                          //      console.log(data.Payload); 
                                 res.json(data.Payload); 
                             }
                         });

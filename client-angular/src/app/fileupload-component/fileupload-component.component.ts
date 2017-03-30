@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
 import { FileListService } from '../services/file-list.service'
 
@@ -10,7 +10,7 @@ import { FileListService } from '../services/file-list.service'
   providers: [FileListService]
 })
 export class FileuploadComponentComponent implements OnInit {
-  public uploader:FileUploader = new FileUploader({url:'http://drawback.evolutionit.com/upload'});
+  public uploader:FileUploader = new FileUploader({url:'http://drawback.evolutionit.com/upload', isHTML5: true});
  // public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload', disableMultipart:true});
   public fileList: string;
   public _id: any;
@@ -27,27 +27,34 @@ export class FileuploadComponentComponent implements OnInit {
 
   
 
- constructor(private _filelistService: FileListService) { 
+ constructor(private _filelistService: FileListService, private ref: ChangeDetectorRef) { 
    this.uploader.onBeforeUploadItem = (item) => {
+       this.ref.detectChanges();
     item.withCredentials = false;
+      
   }
+  
    this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
     //  var responsePath = JSON.parse(response);
     // console.log(response, responsePath);// the url will be in the response
    // console.log("se sredi");
+   this.loadFileList();
+  
+  }
 
    this.uploader.onProgressAll = (progress:any) => {
-      item.progress = progress;
-      // this.showProgress = true;
+    //   this.progress = progress;
+     //  this.showProgress = true;
       // this.incrementValue();
-      // console.log(this.showProgress);
-      // console.log('before', progress);
-
+       this.uploader.progress = progress;
+       console.log(this.uploader.progress);
+        this.ref.detectChanges();
+//       console.log('before', progress);
     }
 
     this.paginateFiles();
   };
- }
+
 
     paginateFiles() {
     this.start = ((this.page - 1) * this.pageSize);
