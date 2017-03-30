@@ -1,3 +1,6 @@
+
+
+
 ________________________________________________________________________________________
 - da se otvori moeto od kaj vlatko i da se stavi toa view za pdf
 - da se napravi da go cita OCR od lambdata 
@@ -5,6 +8,6 @@ ________________________________________________________________________________
 ________________________________________________________________________________________
 
 - da se publikuva cel program nakaj rubixserver
-- da se napravi i tesseract lambda
+
 
 - da se vrze namesto nakaj mongo nakaj dynamoDB ??? dali treba 
