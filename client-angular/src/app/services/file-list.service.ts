@@ -15,7 +15,8 @@ export class FileListService {
     private localUrl : string;
 
     constructor(private _http : Http) {
-        this.localUrl = "http://drawback.evolutionit.com";
+        // this.localUrl = "http://drawback.evolutionit.com";
+           this.localUrl = "http://127.0.0.1:3001";
     };
 
 
@@ -38,6 +39,16 @@ export class FileListService {
                 console.log(res);
             });
 
+    };
+
+    converToDocx(fileName: any, callback) {
+          return this._http.get(this.localUrl + '/converToDocx/' + fileName)
+             .map((res: Response) => res.json())
+            .subscribe(res => {
+                console.log(res);
+                 callback(res);
+                 
+            });
     };
 
     getFileList() {

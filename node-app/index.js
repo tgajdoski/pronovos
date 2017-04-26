@@ -1,32 +1,132 @@
 
-var inspect = require('eyespect').inspector({maxLength:20000});
-var path = require('path');
-//var should = require('should');
-var assert = require('assert');
+var pdftohtml = require('pdftohtmljs');
+var jsdom = require('jsdom');
+var jq = require('jquery');
 var fs = require('fs');
-var async = require('async');
+var exec = require('child_process').exec
+var spawn = require('child_process').spawn;
 
-var convertMod = require('./lib/convert');
-var split = require('./lib/split.js');
+ var HtmlDocx = require('html-docx-js');
+                 
+
+var input_path = './test/test_data/single_page_searchable.pdf';
+var output_path = './test/test_data/multipage_searchable.html';
 
 
-const exec = require('child_process').exec;
-var sync = require('child_process').spawnSync;
+ var convertpdfhtml= function(input_path, output_path, callback) {
+  // options is an optional parameter
+  if (!callback || typeof callback != "function") {
+    callback = quality;   // callback must be the second parameter
+    quality = undefined;  // no option passed
+  }
 
-
-function vidi(data, callback) {
-  var cmd = 'ls'
-  exec(cmd, function (err, stdout, stderr) {
-    // call extraArgs with the "data" param and a callback as well
-    extraArgs(err, stdout, stderr, data, callback) 
-  })
+  fs.exists(input_path, function (exists) {
+    if (!exists) { return callback('error, no file exists at the path you specified: ' + input_path); }
+    // get a temp output path
+    var cmd = 'pdf2htmlEX  "' + input_path + '" "'+ output_path+'"';
+     
+    var child = exec(cmd, function (err, stderr, stdout) {
+      if (err) {
+        return callback(err);
+      }
+      return callback(null, output_path);
+    });
+  });
 }
+convertpdfhtml(input_path, output_path, function (err, output) {
+         console.log(err);
+         console.log(output);
+        // da se trgaat delovi od hmlt-OT
+        var htmlString = fs.readFileSync(output_path);
+       
+      const { JSDOM } = jsdom;
+      const dom = new JSDOM(htmlString);
+      var window = (new JSDOM(htmlString, { runScripts: "outside-only" })).window;
+       var $ = require('jquery')(window);
+        $('head').empty().append(`<meta charset="utf-8"/>
+        <style type="text/css">
+        @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+        </style>
+        <title></title>`);
+        
+        $( ".loading-indicator" ).remove();
+        
 
-function extraArgs(err, stdout, stderr, data, callback) {
-  console.log(stdout);
-}
+          var fileName = './test/test_data/multipage_searchableMM.html';
+          fs.writeFile(fileName, window.document.documentElement.outerHTML,
+              function (error){
+                if (error) 
+                  throw error;
+                else{
+                  var inputFile = './test/test_data/multipage_searchableMM.html'
+                  var outputFile = './test/test_data/multipage_searchableMM.docx'
 
-vidi('asdasd',null)
+                  fs.readFile(inputFile, 'utf-8', function(err, html) {
+                    if (err) throw err;
+
+                    var docx = HtmlDocx.asBlob(html);
+                    fs.writeFile(outputFile, docx, function(err) {
+                      if (err) throw err;
+                    });
+                  });
+
+                }
+        });
+
+    });
+
+
+
+
+
+
+
+// See presets (ipad, default) 
+// Feel free to create custom presets 
+// see https://github.com/fagbokforlaget/pdftohtmljs/blob/master/lib/presets/ipad.js 
+// convert() returns promise 
+// converter.convert('default').then(function() {
+//   console.log("Success");
+// }).catch(function(err) {
+//   // console.error("Conversion error: " + err);
+//   console.log(err);
+// });
+ 
+// // If you would like to tap into progress then create 
+// // progress handler 
+// converter.progress(function(ret) {
+//   console.log ((ret.current*100.0)/ret.total + " %");
+// });
+
+
+// var inspect = require('eyespect').inspector({maxLength:20000});
+// var path = require('path');
+// //var should = require('should');
+// var assert = require('assert');
+// var fs = require('fs');
+// var async = require('async');
+
+// var convertMod = require('./lib/convert');
+// var split = require('./lib/split.js');
+
+
+// const exec = require('child_process').exec;
+// var sync = require('child_process').spawnSync;
+
+
+// function vidi(data, callback) {
+//   var cmd = 'ls'
+//   exec(cmd, function (err, stdout, stderr) {
+//     // call extraArgs with the "data" param and a callback as well
+//     extraArgs(err, stdout, stderr, data, callback) 
+//   })
+// }
+
+// function extraArgs(err, stdout, stderr, data, callback) {
+//   console.log(stdout);
+// }
+
+// vidi('asdasd',null)
      
 
 

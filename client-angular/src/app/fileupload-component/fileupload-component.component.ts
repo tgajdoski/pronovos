@@ -10,8 +10,8 @@ import { FileListService } from '../services/file-list.service'
   providers: [FileListService]
 })
 export class FileuploadComponentComponent implements OnInit {
-  public uploader:FileUploader = new FileUploader({url:'http://drawback.evolutionit.com/upload', isHTML5: true});
- // public uploader:FileUploader = new FileUploader({url:'http://localhost:3001/upload', disableMultipart:true});
+ // public uploader:FileUploader = new FileUploader({url:'http://drawback.evolutionit.com/upload', isHTML5: true});
+  public uploader:FileUploader = new FileUploader({url:'http://127.0.0.1:3001/upload', isHTML5: true});
   public fileList: string;
   public _id: any;
   public fileName: any;
@@ -101,6 +101,29 @@ export class FileuploadComponentComponent implements OnInit {
 
  
    }
+
+
+   convertoDocx(e: any, element: any) {
+    this._id = element._id;
+    this.fileName = element.filename;
+    this.originalname = element.originalname;
+    this.mimetype = element.mimetype;
+    this.size = element.size;
+    this.uploadDate = element.uploadDate;
+     var serviceot = this._filelistService;
+     var filename =  this.fileName;
+
+     if (e.innerText!="Download")
+     {
+        var convertFile = serviceot.converToDocx(this.fileName, function(res){
+          e.innerText = "Download";
+        });
+      }
+      else
+      { 
+        alert("asdasd");
+      }
+ }
 
   deleteFile(e: any, element: any) {
     this._filelistService.deleteFile(element._id)
