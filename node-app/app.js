@@ -185,7 +185,7 @@ app.post('/upload', function (req, res, err) {
                     var params = {
                         localFile: "./uploads/"+req.file.filename,
                         s3Params: {
-                            Bucket: "pronovosrubixcube123",
+                            Bucket: "pronovosrubixcube",
                             Key: req.file.filename
                         },
                     };
@@ -259,7 +259,7 @@ app.post('/PostOCRImage', function (req, res, err) {
                     var params = {
                         localFile: "./uploads/ocr/"+filenamefinal,
                         s3Params: {
-                            Bucket: "pronovosrubixcube123",
+                            Bucket: "pronovosrubixcube",
                             Key: filenamefinal
                         },
                     };
@@ -275,17 +275,17 @@ app.post('/PostOCRImage', function (req, res, err) {
                                 uploader.progressAmount, uploader.progressTotal);
                     });
                     uploader.on('end', function() {
-                       var lambda = new AWS.Lambda({region: 'us-west-2', apiVersion: '2015-03-31'});
+                       var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
  
                         var args = {
-                          bucketName: 'pronovosrubixcube123',
+                          bucketName: 'pronovosrubixcube',
                         //   folderName: 'ocr/',
                           imagefileName: filenamefinal
                       }
 
                         var params = {
                             InvocationType: 'RequestResponse',
-                            FunctionName: 'arn:aws:lambda:us-west-2:001625110443:function:tesseractLambda', /* required */
+                            FunctionName: 'arn:aws:lambda:us-east-1:003549873636:function:tesseractLambda-dev-hello',//'arn:aws:lambda:us-west-2:001625110443:function:tesseractLambda', /* required */
                             Payload:  JSON.stringify(args)
                         };
                         lambda.invoke(params, function(err, data) {
@@ -471,7 +471,7 @@ app.get('/split/:filename', function (req, res, next) {
                     var params = {
                     localFile: "./uploads/split/"+ filenoExt +"/" + file,
                     s3Params: {
-                        Bucket: "pronovosrubixcube123",
+                        Bucket: "pronovosrubixcube",
                         Key: "split/" +filenoExt +"/" + file
                         } 
                     };
@@ -542,20 +542,20 @@ app.get('/createthumb/:filename', function (req, res, next) {
                 throw error;
             }
             else {
-                var lambda = new AWS.Lambda({region: 'us-west-2', apiVersion: '2015-03-31'});
+                var lambda = new AWS.Lambda({region: 'us-east-1', apiVersion: '2015-03-31'});
 
                 filelist.forEach(file => { 
                     if(file.startsWith("page"))
                     {
                        //  var locpath = "./uploads/split/"+ filenoExt +"/" + file ;  
                       var args = {
-                          bucketName: 'pronovosrubixcube123',
+                          bucketName: 'pronovosrubixcube',
                           folderName: 'split/' + filenoExt + '/',
                           pdffileName: file.replace(/\.[^/.]+$/, "")
                       }
 
                         var params = {
-                            FunctionName: 'arn:aws:lambda:us-west-2:001625110443:function:pdf2Thumb', /* required */
+                            FunctionName: 'arn:aws:lambda:us-east-1:003549873636:function:pdf2Thumb', //arn:aws:lambda:us-west-2:001625110443:function:pdf2Thumb', /* required */
                             Payload:  JSON.stringify(args)
                         };
                         lambda.invoke(params, function(err, data) {
@@ -752,10 +752,10 @@ app.get('/folderlist/:foldername', function (req, res, next) {
 app.get('/s3folderlist/:foldername', function (req, res, next) {
             var foldername =  req.params.foldername;
             var fpath = 'split/' + foldername + '/';
-            var b = 'pronovosrubixcube123';
+            var b = 'pronovosrubixcube';
             var stagingparams = {
                 s3Params: {
-                Bucket: 'pronovosrubixcube123',
+                Bucket: 'pronovosrubixcube',
                 Prefix: fpath
                 }
             };
@@ -801,7 +801,7 @@ app.get('/thumb/:foldername/:filename', function (req, res) {
         concurrency: 6,
         params: {
             Key: file,
-            Bucket: 'pronovosrubixcube123'
+            Bucket: 'pronovosrubixcube'
         }
     }
     downloader(config)

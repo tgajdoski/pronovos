@@ -9,7 +9,7 @@ var spawn = require('child_process').spawn;
  var HtmlDocx = require('html-docx-js');
                  
 
-var input_path = './test/test_data/single_page_searchable.pdf';
+var input_path = './test/test_data/multipage_searchable.pdf';
 var output_path = './test/test_data/multipage_searchable.html';
 
 
@@ -43,11 +43,11 @@ convertpdfhtml(input_path, output_path, function (err, output) {
       const dom = new JSDOM(htmlString);
       var window = (new JSDOM(htmlString, { runScripts: "outside-only" })).window;
        var $ = require('jquery')(window);
-        $('head').empty().append(`<meta charset="utf-8"/>
-        <style type="text/css">
-        @import url('https://fonts.googleapis.com/css?family=Open+Sans');
-        </style>
-        <title></title>`);
+        // $('head').empty().append(`<meta charset="utf-8"/>
+        // <style type="text/css">
+        // @import url('https://fonts.googleapis.com/css?family=Open+Sans');
+        // </style>
+        // <title></title>`);
         
         $( ".loading-indicator" ).remove();
         
