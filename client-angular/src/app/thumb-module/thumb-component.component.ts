@@ -13,7 +13,7 @@ export class ThumbComponentComponent implements OnInit {
 
 // vrti po sekoj pdf of dir i pravi 
 
-  pdfSrc = 'http://localhost:3001/uploads/split/file-1489246452855/page00001.pdf';
+  pdfSrc = 'http://ec2-54-242-213-93.compute-1.amazonaws.com:3001//uploads/split/file-1489246452855/page00001.pdf';
   page:number = 1;
   pageurl:SafeResourceUrl;
   
@@ -96,7 +96,7 @@ export class ThumbComponentComponent implements OnInit {
     //     this.src =  res._body;
     //      console.log(res);
     //   });
-    this.src = "http://localhost:3001/"+foldername+"/"+filename;
+    this.src = "http://ec2-54-242-213-93.compute-1.amazonaws.com:3001/"+foldername+"/"+filename;
    }
 }
 
