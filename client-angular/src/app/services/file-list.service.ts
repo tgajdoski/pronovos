@@ -16,7 +16,7 @@ export class FileListService {
 
     constructor(private _http : Http) {
         // this.localUrl = "http://drawback.evolutionit.com";
-           this.localUrl = "http://ec2-54-242-213-93.compute-1.amazonaws.com:3001";
+           this.localUrl = "http://drawback.rubixcubesolutions.com";
     };
 
 

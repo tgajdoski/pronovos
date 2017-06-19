@@ -11,7 +11,7 @@ import { FileListService } from '../services/file-list.service'
 })
 export class FileuploadComponentComponent implements OnInit {
  // public uploader:FileUploader = new FileUploader({url:'http://drawback.evolutionit.com/upload', isHTML5: true});
-  public uploader:FileUploader = new FileUploader({url:'http://ec2-54-242-213-93.compute-1.amazonaws.com:3001//upload', isHTML5: true});
+  public uploader:FileUploader = new FileUploader({url:'http://drawback.rubixcubesolutions.com/upload', isHTML5: true});
   public fileList: string;
   public _id: any;
   public fileName: any;

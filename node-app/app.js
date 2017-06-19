@@ -215,8 +215,8 @@ app.post('/upload', function (req, res, err) {
 
                     // Configure the request
                     var options = {
-                        //uri: 'http://drawback.evolutionit.com/files',
-                          uri: 'http://127.0.0.1:3001/files',
+                        uri: 'http://drawback.rubixcubesolutions.com/files',
+                        //  uri: 'http://127.0.0.1:3001/files',
                         method: 'POST',
                         headers: headers,
                         body: myJSONObject
@@ -709,8 +709,8 @@ app.get('/folderlist/:foldername', function (req, res, next) {
             
             filelist.forEach(file => {
                 
-               //var hosturl = "http://drawback.evolutionit.com";
-                var hosturl = "http://127.0.0.1:3001";
+               var hosturl = "http://drawback.rubixcubesolutions.com";
+               // var hosturl = "http://127.0.0.1:3001";
               
                  var pathpfd = url.resolve(hosturl, fpath) + "/" + file;
                
@@ -774,8 +774,8 @@ app.get('/s3folderlist/:foldername', function (req, res, next) {
                  //   console.log(JSON.stringify(dataLst));
                     dataLst.forEach(obj => {
                         console.log(obj);
-                         // var hosturl = "http://drawback.evolutionit.com/thumb/";
-                         var hosturl = "http://127.0.0.1:3001/thumb/";
+                          var hosturl = "http://drawback.rubixcubesolutions.com/thumb/";
+                       //  var hosturl = "http://127.0.0.1:3001/thumb/";
                          var pathpfd = url.resolve(hosturl, foldername) + "/" + obj.Key.split('/').pop();
                          var pdfname =  obj.Key;
                          files.push({pdfPath: pathpfd, pdfName: pdfname});
