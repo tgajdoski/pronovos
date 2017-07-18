@@ -120,7 +120,7 @@
                         <button type="button" class="btn btn-success" (click)="workOcr($event, file)" data-toggle="modal" data-target="#myModal">SPLIT-OCR</button>
                         <button type="button" class="btn btn-danger" (click)="deleteFile($event, file)">Delete</button>
                         <!--<button type="button" class="btn btn-danger" (click)="openthumb($event, file)">open thumb</button>-->
-                        <a [routerLink]="['/thumb', file.filename]">view thumbs</a>
+                        <a *ngIf=isSplited [routerLink]="['/thumb', file.filename]">view thumbs</a>
                        <!--   <button type="button" class="btn btn-danger" (click)="convertoDocx($event.target, file)">2Docx</button>-->
                         </td>
                     </tr>
