@@ -251,7 +251,7 @@ app.post('/PostOCRImage', function (req, res, err) {
                     return;
                 } else {
                     var postedFile = req.file;
-                    
+                    console.log(req.file);
                     console.log(req.file.filename.replace(/\.[^/.]+$/, ""));
                     var filenamefinal = req.file.filename.replace(/\.[^/.]+$/, "") + ".png";
                     // ovoj del sakam da kopira nakaj s3  - se pravat params
@@ -454,8 +454,9 @@ app.get('/split/:filename', function (req, res, next) {
     var filenoExt = file_name.replace(/\.[^/.]+$/, "");
 
     console.log(filenoExt);
-    
-    split(pdf_path, filenoExt, function (err, output) {
+ 
+    try {
+        split(pdf_path, filenoExt, function (err, output) {
        //  console.log(err);
     //     console.log(output);
   // otkako ke issplituva se pravi folder so isto ime kako fajlot bez nastavka
@@ -466,30 +467,30 @@ app.get('/split/:filename', function (req, res, next) {
                 throw error;
             }
             else {
-                var itemsProcessed = 0;
-                filelist.forEach(file => { 
-                    var params = {
-                    localFile: "./uploads/split/"+ filenoExt +"/" + file,
-                    s3Params: {
-                        Bucket: "pronovosrubixcube",
-                        Key: "split/" +filenoExt +"/" + file
-                        } 
-                    };
-                    var uploader = client.uploadFile(params);
-                    uploader.on('end', function() {
-                        console.log("done uploading  "+ params);
-                        itemsProcessed++;
-                        console.log(itemsProcessed);
-                        if(itemsProcessed === filelist.length) {
-                        console.log("krajot e tuka");
-                        res.json(filelist);
-                    }
-                    });
-                    
-                    
-                 });  
-            }
-            });
+                    var itemsProcessed = 0;
+                    filelist.forEach(file => { 
+                        var params = {
+                        localFile: "./uploads/split/"+ filenoExt +"/" + file,
+                        s3Params: {
+                            Bucket: "pronovosrubixcube",
+                            Key: "split/" +filenoExt +"/" + file
+                            } 
+                        };
+                        var uploader = client.uploadFile(params);
+                        uploader.on('end', function() {
+                            console.log("done uploading  "+ params);
+                            itemsProcessed++;
+                            console.log(itemsProcessed);
+                            if(itemsProcessed === filelist.length) {
+                            console.log("krajot e tuka");
+                            res.json(filelist);
+                        }
+                        });
+                        
+                        
+                    });  
+                }
+                });
             //   if (err){
             //             throw error;
             //         }
@@ -497,7 +498,11 @@ app.get('/split/:filename', function (req, res, next) {
             //             res.json(output);
             //         }
 
-    });
+             });
+    } catch (error) {
+        console.log(error);
+    }
+    
 
 
   
@@ -537,7 +542,8 @@ app.get('/createthumb/:filename', function (req, res, next) {
     
         var fpath = './uploads/split/' + filenoExt;
         console.log(fpath);
-        fs.readdir(fpath, function(error, filelist) {
+try {
+    fs.readdir(fpath, function(error, filelist) {
             if (error) {
                 throw error;
             }
@@ -571,6 +577,9 @@ app.get('/createthumb/:filename', function (req, res, next) {
                  res.json(filelist);
             }
         });
+            } catch (error) {
+                console.log(error);
+            }
 });
 
 
@@ -580,7 +589,7 @@ app.get('/converToDocx/:filename', function (req, res, next) {
  
      var file_name =  req.params.filename;
       var relative_path = './uploads/' + file_name;
-var filenoExt = file_name.replace(/\.[^/.]+$/, "");
+    var filenoExt = file_name.replace(/\.[^/.]+$/, "");
     var html_file_name = filenoExt + '.html';
      var output_path = './uploads/' + html_file_name;
     // var relative_path = path.join('./uploads',file_name);
@@ -592,6 +601,8 @@ var filenoExt = file_name.replace(/\.[^/.]+$/, "");
     
   
   
+
+
     var convertpdfhtml= function(relative_path, output_path, filenoExt, callback) {
     // options is an optional parameter
     if (!callback || typeof callback != "function") {
@@ -675,8 +686,8 @@ app.get('/folderlistdata/:foldername', function (req, res, next) {
     var foldername =  req.params.foldername;
     var fpath = './uploads/split/' + foldername;
 
-
-
+    try {
+        
         fs.readFile( fpath + '/doc_data.txt', function(err, data) {
             if(err) throw err;
             var array = data.toString().split("\n");
@@ -692,6 +703,9 @@ app.get('/folderlistdata/:foldername', function (req, res, next) {
              res.contentType('application/json');
             res.send(JSON.stringify(arrayFinal));
         });
+    } catch (error) {
+        console.log(error);
+    }
 
 });
    
@@ -700,7 +714,8 @@ app.get('/folderlist/:foldername', function (req, res, next) {
     var foldername =  req.params.foldername;
     var fpath = './uploads/split/' + foldername;
 
-    fs.readdir(fpath, function(error, filelist) {
+try {
+     fs.readdir(fpath, function(error, filelist) {
           if (error) {
             throw error;
           }
@@ -721,33 +736,14 @@ app.get('/folderlist/:foldername', function (req, res, next) {
             res.send(JSON.stringify(files));
           }
         });
+    } catch (error) {
+        console.log(error);
+    }
+  
 });
 
 
 
-// app.get('/s3folderlistdata/:foldername', function (req, res, next) {
-   
-//     var foldername =  req.params.foldername;
-//     var fpath = './uploads/split/' + foldername;
-
-//         fs.readFile( fpath + '/doc_data.txt', function(err, data) {
-//             if(err) throw err;
-//             var array = data.toString().split("\n");
-//             var num = 0; 
-//             var arrayFinal =  [];
-//             for(var i in array) {
-//                 if (array[i].startsWith('BookmarkTitle:') )
-//                 {
-//                     num++;
-//                 arrayFinal.push(array[i].replace('BookmarkTitle:', ''));
-//                 }
-//             }
-//              res.contentType('application/json');
-//             res.send(JSON.stringify(arrayFinal));
-//         });
-
-// });
-   
 
 app.get('/s3folderlist/:foldername', function (req, res, next) {
             var foldername =  req.params.foldername;
